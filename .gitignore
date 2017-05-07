@@ -1,0 +1,6 @@
+env/
+node_modules/
+*.pyc
+server/static/*.js
+server/static/*.css
+npm-debug*
