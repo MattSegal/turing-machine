@@ -1,0 +1,12 @@
+:local {
+    .tapeContainer {
+        display: flex;
+    }
+    .entry {
+
+        &.active {
+            color: red
+        }
+    }
+    
+}

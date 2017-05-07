@@ -1,0 +1,14 @@
+:local {
+    $sidebarWidth: 200px;
+    .sidebarSpacer {
+        height: 100%;
+        width: $sidebarWidth;
+    }
+    .sidebarContainer {
+        position: fixed;
+        width: $sidebarWidth;
+        height: 100%;
+        background-color: #ccc;
+    }
+
+}
