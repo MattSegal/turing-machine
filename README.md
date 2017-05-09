@@ -15,16 +15,14 @@ Requires node, npm and python 2.7
 
 Install dependencies
 
-`pip install -r requirements.txt`
-
-`npm install -g webpack`
-
-`npm install`
+* `pip install -r requirements.txt`
+* `npm install -g webpack`
+* `npm install`
 
 Build Assets
 
-`npm run dev`
+* `npm run dev`
 
 Run Local Webserver
 
-`python run.py`
+* `python run.py`
