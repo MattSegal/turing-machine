@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import Actions from 'actions'
 import Sidebar from 'components/sidebar'
 import Tape from 'components/tape'
+import Program from 'components/program'
 import style from 'scss/app.scss'
 
 class App extends Component
@@ -17,10 +18,11 @@ class App extends Component
           running={machine.running}
         />
         <div className={style.appContent}>
-        <Tape 
-          setTape={setTape} 
-          {...machine} 
-        />
+          <Tape 
+            setTape={setTape} 
+            {...machine} 
+          />
+          <Program />
         </div>
       </div>
     )

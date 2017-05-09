@@ -1,0 +1,22 @@
+@import 'constants';
+
+:local {
+    .programContainer {
+        width: 100%;
+        height: 300px;
+        outline: 1px solid #ccc;
+        position: relative;
+    }
+
+    .program {
+
+    }
+
+    .node {
+        width: 20px;
+        height: 20px;
+        border-radius: 20px;
+        background-color: #ccc;
+        position: absolute;
+    }
+}

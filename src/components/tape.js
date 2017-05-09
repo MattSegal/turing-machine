@@ -41,7 +41,6 @@ class Tape extends Component
 
   render()
   {
-    // TODO: Fix update bug
     const {tape, head, graph} = this.props
     return (
       <div>
