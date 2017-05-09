@@ -1,8 +1,10 @@
+@import 'constants';
+
 :local {
     .appContainer {
-        display: flex;
+        
     }
     .appContent {
-
+        padding-left: $sidebarWidth;
     }
 }

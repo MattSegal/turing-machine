@@ -23,20 +23,20 @@ const initialState = {
   machine: {
     running: false,
     match: null,
-    tape: [CONST.START,1,0,1,1,0,0],
-    head: 1,
-    node: 'a',
+    tape: [CONST.START,1,0,1,1,0,0,CONST.BLANK],
+    head: CONST.HEAD_START,
+    node: CONST.INIT,
     graph: {
-      a: [
+      'INIT': [
         {
           read: 1,
-          next: 'a',
+          next: CONST.INIT,
           write: 1,
           move: CONST.RIGHT
         },
         {
           read: 0,
-          next: 'a',
+          next: CONST.INIT,
           write: 1,
           move: CONST.LEFT
         },

@@ -1,8 +1,10 @@
 module.exports = {
   LEFT: 'LEFT',
   RIGHT: 'RIGHT',
+  INIT: 'INIT',
   ACCEPT: 'ACCEPT',
   REJECT: 'REJECT',
-  BLANK: '_',
-  START: '$',
+  BLANK: ' ',
+  START: 'START',
+  HEAD_START: 1,
 }

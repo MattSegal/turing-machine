@@ -1,9 +1,6 @@
+@import 'constants';
+
 :local {
-    $sidebarWidth: 200px;
-    .sidebarSpacer {
-        height: 100%;
-        width: $sidebarWidth;
-    }
     .sidebarContainer {
         position: fixed;
         width: $sidebarWidth;

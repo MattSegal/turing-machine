@@ -1,12 +1,51 @@
 :local {
+    .status {
+        text-align: center;
+    }
     .tapeContainer {
         display: flex;
-    }
-    .entry {
+        justify-content: center;
+        align-items: center;
+        height: 200px;
 
-        &.active {
-            color: red
+    }
+
+    ._entry {
+        width: 20px;
+        min-height: 26px;
+        font-size: 22px;
+        text-align: center;
+        border: none;
+        background-color: #eff;
+    }
+
+    .start {
+        @extend ._entry;
+    }
+
+    .entry {
+        @extend ._entry;
+        cursor: pointer;
+        color: transparent;
+        text-shadow: 0 0 black;
+        &::selection {
+            background-color: #eff;
         }
+    }
+
+    .entryContainer + .entryContainer {
+        margin-left: 3px;
+    }
+
+    .entryContainer {
+        position: relative;    
+    }
+
+    .head {
+        font-size: 22px;
+        position: absolute;
+        bottom: -18px;
+        left: 0;
     }
     
 }

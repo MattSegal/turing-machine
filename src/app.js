@@ -9,16 +9,18 @@ class App extends Component
 {
   render()
   {
-    const {machine, startMachine} = this.props
+    const {machine, startMachine, setTape} = this.props
     return (
       <div className={style.appContainer}>
         <Sidebar 
           startMachine={startMachine}
           running={machine.running}
-          match={machine.match} 
         />
         <div className={style.appContent}>
-        <Tape {...machine} />
+        <Tape 
+          setTape={setTape} 
+          {...machine} 
+        />
         </div>
       </div>
     )
@@ -31,6 +33,7 @@ let mapStateToProps = (state) => ({
 
 let mapDispatchToProps = (dispatch) => ({
   startMachine: () => dispatch(Actions.startMachine()),
+  setTape: (idx, val) => dispatch(Actions.setTape(idx, val))
 })
 
 module.exports = connect(
