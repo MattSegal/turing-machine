@@ -1,6 +1,5 @@
-env/
 node_modules/
-*.pyc
-server/static/*.js
-server/static/*.css
+static/*.js
+static/*.css
+build.py
 npm-debug*
