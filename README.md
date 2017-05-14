@@ -11,18 +11,13 @@ Done using learnings from [Theory of Computation](https://www.youtube.com/playli
 
 # Setup
 
-Requires node, npm and python 2.7
+Requires node and npm
 
 Install dependencies
 
-* `pip install -r requirements.txt`
 * `npm install -g webpack`
 * `npm install`
 
 Build Assets
 
 * `npm run dev`
-
-Run Local Webserver
-
-* `python run.py`
