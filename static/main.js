@@ -25930,29 +25930,78 @@
 	                      _react2.default.createElement(
 	                        'option',
 	                        { value: '0' },
-	                        '1'
+	                        '0'
 	                      ),
 	                      _react2.default.createElement(
 	                        'option',
 	                        { value: '1' },
-	                        '0'
+	                        '1'
+	                      ),
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: '#' },
+	                        '#'
 	                      )
 	                    )
 	                  ),
 	                  _react2.default.createElement(
 	                    'span',
 	                    null,
-	                    rule.write
+	                    _react2.default.createElement(
+	                      'select',
+	                      { defaultValue: rule.write },
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: '0' },
+	                        '0'
+	                      ),
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: '1' },
+	                        '1'
+	                      ),
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: '#' },
+	                        '#'
+	                      )
+	                    )
 	                  ),
 	                  _react2.default.createElement(
 	                    'span',
 	                    null,
-	                    rule.move
+	                    _react2.default.createElement(
+	                      'select',
+	                      { defaultValue: rule.write },
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: 'RIGHT' },
+	                        'RIGHT'
+	                      ),
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: 'LEFT' },
+	                        'LEFT'
+	                      )
+	                    )
 	                  ),
 	                  _react2.default.createElement(
 	                    'span',
 	                    null,
-	                    rule.next
+	                    _react2.default.createElement(
+	                      'select',
+	                      { defaultValue: rule.write },
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: 'A' },
+	                        'A'
+	                      ),
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: 'B' },
+	                        'B'
+	                      )
+	                    )
 	                  )
 	                );
 	              })

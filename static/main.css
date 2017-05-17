@@ -101,16 +101,20 @@ h1 {
   display: flex;
   -webkit-justify-content: space-around;
       -ms-flex-pack: distribute;
-          justify-content: space-around;
-  padding: 5px 0; }
+          justify-content: space-around; }
   .program__rule span {
     width: 25%;
     text-align: center; }
   .program__rule select {
+    cursor: pointer;
     -webkit-appearance: none;
        -moz-appearance: none;
             appearance: none;
     border: none;
-    text-align-last: center; }
+    text-align-last: center;
+    width: 100%;
+    padding: 8px; }
+    .program__rule select:hover {
+      font-weight: bold; }
   .program__rule .program__header {
     font-weight: bold; }

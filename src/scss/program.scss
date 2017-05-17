@@ -39,7 +39,6 @@
     .rule {
         display: flex;
         justify-content: space-around;
-        padding: 5px 0;
         
         span {
             width: 25%;
@@ -47,9 +46,15 @@
         }
 
         select {
+            cursor: pointer;
             appearance: none;  
             border: none;
             text-align-last: center;
+            width: 100%;
+            padding: 8px;
+            &:hover {
+                font-weight: bold;
+            }
         }
 
         .header {

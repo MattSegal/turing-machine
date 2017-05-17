@@ -29,13 +29,30 @@ class Program extends Component
                 <div key={idx} className={style.rule}>
                   <span>
                     <select defaultValue={rule.read}>
-                      <option value="0">1</option> 
-                      <option value="1">0</option>
+                      <option value="0">0</option> 
+                      <option value="1">1</option>
+                      <option value="#">#</option>
                     </select>
                   </span>
-                  <span>{rule.write}</span>
-                  <span>{rule.move}</span>
-                  <span>{rule.next}</span>
+                  <span>
+                    <select defaultValue={rule.write}>
+                      <option value="0">0</option> 
+                      <option value="1">1</option>
+                      <option value="#">#</option>
+                    </select>
+                  </span>
+                  <span>                    
+                    <select defaultValue={rule.write}>
+                      <option value="RIGHT">RIGHT</option> 
+                      <option value="LEFT">LEFT</option>
+                    </select>
+                  </span>
+                  <span>                    
+                    <select defaultValue={rule.write}>
+                      <option value="A">A</option> 
+                      <option value="B">B</option>
+                    </select>
+                  </span>
                 </div>
               ))}
             </div>
