@@ -11,8 +11,6 @@ class Tape extends Component
     setTape: PropTypes.func,
     tape: PropTypes.array, 
     head: PropTypes.number,
-    running: PropTypes.bool,
-    match: PropTypes.string,
   }
 
   handleKeyDown = (idx) => (e) => {
@@ -26,18 +24,7 @@ class Tape extends Component
     e.target.focus()
   }
 
-  getStatus = () => {
-    if (this.props.running) 
-      return 'RUNNING'
-    switch(this.props.match) {
-      case CONST.ACCEPT: 
-        return 'ACCEPT'
-      case CONST.REJECT: 
-        return 'REJECT'
-      default: 
-        return ''
-    }
-  }
+  
 
   render()
   {
@@ -47,7 +34,7 @@ class Tape extends Component
         <div className={style.tapeContainer}>
           {tape.map((entry,  idx) => ( idx === 0
             ? <span key={idx} className={style.entryContainer}>
-                <FaStarO className={style.start} />
+                <input readOnly className={style.start} value={CONST.START} />
                 {head === idx && <MdArrowDropUp className={style.head} />}
               </span>
             : <span key={idx} className={style.entryContainer}>
@@ -64,7 +51,6 @@ class Tape extends Component
               </span>
           ))}
         </div>
-        <h3 className={style.status}>{this.getStatus()}</h3>
       </div>
     )
   }

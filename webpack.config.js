@@ -8,7 +8,7 @@ const config = {
     context: path.resolve('./src'),
     entry: './index',
     output: {
-        path: path.resolve('./server/static/'),
+        path: path.resolve('./static/'),
         filename: "[name].js",
     },
     postcss: [

@@ -1,22 +1,25 @@
 :local {
+    $blue: #99e;
+
     .status {
         text-align: center;
     }
     .tapeContainer {
         display: flex;
         justify-content: center;
-        align-items: center;
-        height: 200px;
-
+        align-items: flex-end;
+        margin-bottom: 50px;
     }
 
     ._entry {
         width: 20px;
-        min-height: 26px;
-        font-size: 22px;
+        height: 30px;
+        font-size: 26px;
         text-align: center;
         border: none;
-        background-color: #eff;
+        text-shadow: 0 0 black;
+        color: transparent;
+        box-sizing: border-box;
     }
 
     .start {
@@ -25,11 +28,10 @@
 
     .entry {
         @extend ._entry;
+        border-bottom: solid $blue 2px;
         cursor: pointer;
-        color: transparent;
-        text-shadow: 0 0 black;
         &::selection {
-            background-color: #eff;
+            background-color: none;
         }
     }
 

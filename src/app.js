@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux'
 import Actions from 'actions'
-import Sidebar from 'components/sidebar'
+import Dashboard from 'components/dashboard'
 import Tape from 'components/tape'
 import Program from 'components/program'
 import style from 'scss/app.scss'
@@ -13,16 +13,17 @@ class App extends Component
     const {machine, startMachine, setTape} = this.props
     return (
       <div className={style.appContainer}>
-        <Sidebar 
+        <Dashboard 
           startMachine={startMachine}
           running={machine.running}
+          match={machine.match}
         />
         <div className={style.appContent}>
           <Tape 
             setTape={setTape} 
             {...machine} 
           />
-          <Program />
+          <Program graph={machine.graph} />
         </div>
       </div>
     )

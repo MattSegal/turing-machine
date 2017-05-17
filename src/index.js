@@ -27,7 +27,7 @@ const initialState = {
     head: CONST.HEAD_START,
     node: CONST.INIT,
     graph: {
-      'INIT': [
+      A: [
         {
           read: 1,
           next: CONST.INIT,
@@ -42,15 +42,15 @@ const initialState = {
         },
         {
           read: CONST.BLANK,
-          next: 'b',
+          next: 'B',
           write: CONST.BLANK,
           move: CONST.LEFT
         },
       ],
-      b: [
+      B: [
         {
           read: 1,
-          next: 'b',
+          next: 'B',
           write: 1,
           move: CONST.LEFT
         },
@@ -60,6 +60,10 @@ const initialState = {
           write: CONST.START,
         }
       ]
+    },
+    boxes: {
+      A: {top: 20, left: 80},
+      B: {top: 180, left: 20}
     }
   }
 }

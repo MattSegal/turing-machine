@@ -1,23 +1,59 @@
 @import 'constants';
 
 :local {
-    .programContainer {
-        width: 100%;
-        height: 300px;
-        outline: 1px solid #ccc;
-        position: relative;
+    h1 {
+        text-align: center;
+        margin-bottom: 10px;
     }
 
-    .program {
-
-    }
-
+    $header-width: 50px;
     .node {
-        width: 20px;
-        height: 20px;
-        border-radius: 20px;
+        display: flex;
+        margin: 0 auto 3px auto;
+        max-width: calc(300px +  #{$header-width});
+        align-items: stretch;
+    }
+
+    ._nodeHeader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: $header-width;
+        text-align: center;
+    }
+
+    .topHeader {
+        @extend ._nodeHeader;
+    }
+
+    .nodeHeader {
+        @extend ._nodeHeader;
         background-color: #ccc;
-        position: absolute;
-        cursor: move;
+    }
+
+    .nodeRules {
+        width: calc(100% - #{$header-width});
+        
+    }
+
+    .rule {
+        display: flex;
+        justify-content: space-around;
+        padding: 5px 0;
+        
+        span {
+            width: 25%;
+            text-align: center;
+        }
+
+        select {
+            appearance: none;  
+            border: none;
+            text-align-last: center;
+        }
+
+        .header {
+            font-weight: bold;
+        }
     }
 }
