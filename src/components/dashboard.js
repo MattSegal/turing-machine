@@ -8,14 +8,16 @@ class Dashboard extends Component
 {
   static propTypes = {
     startMachine: PropTypes.func, 
-    running: PropTypes.bool,
-    match: PropTypes.string,
+    machine : PropTypes.shape({
+      state: PropTypes.string,
+    }).isRequired,
   }
 
   getStatus = () => {
-    if (this.props.running) 
-      return 'RUNNING'
-    switch(this.props.match) {
+    const {machine} = this.props
+    switch(machine.state) {
+      case CONST.RUNNING:
+        return 'RUNNING'
       case CONST.ACCEPT: 
         return 'ACCEPT'
       case CONST.REJECT: 

@@ -91,43 +91,41 @@
 
 	var initialState = {
 	  machine: {
-	    running: false,
-	    match: null,
-	    tape: [_constants2.default.START, 1, 0, 1, 1, 0, 0, _constants2.default.BLANK],
+	    state: _constants2.default.VIRGIN,
 	    head: _constants2.default.HEAD_START,
-	    node: _constants2.default.INIT,
-	    graph: {
-	      A: [{
-	        read: 1,
-	        next: _constants2.default.INIT,
-	        write: 1,
-	        move: _constants2.default.RIGHT
-	      }, {
-	        read: 0,
-	        next: _constants2.default.INIT,
-	        write: 1,
-	        move: _constants2.default.LEFT
-	      }, {
-	        read: _constants2.default.BLANK,
-	        next: 'B',
-	        write: _constants2.default.BLANK,
-	        move: _constants2.default.LEFT
-	      }],
-	      B: [{
-	        read: 1,
-	        next: 'B',
-	        write: 1,
-	        move: _constants2.default.LEFT
-	      }, {
-	        read: _constants2.default.START,
-	        next: _constants2.default.ACCEPT,
-	        write: _constants2.default.START
-	      }]
-	    },
-	    boxes: {
-	      A: { top: 20, left: 80 },
-	      B: { top: 180, left: 20 }
+	    match: {
+	      node: _constants2.default.INIT,
+	      ruleIdx: null
 	    }
+	  },
+	  tape: [_constants2.default.START, '1', '0', '1', '1', '0', '0', _constants2.default.BLANK],
+	  program: {
+	    A: [{
+	      read: '1',
+	      next: _constants2.default.INIT,
+	      write: '1',
+	      move: _constants2.default.RIGHT
+	    }, {
+	      read: '0',
+	      next: _constants2.default.INIT,
+	      write: '1',
+	      move: _constants2.default.LEFT
+	    }, {
+	      read: _constants2.default.BLANK,
+	      next: 'B',
+	      write: _constants2.default.BLANK,
+	      move: _constants2.default.LEFT
+	    }],
+	    B: [{
+	      read: '1',
+	      next: 'B',
+	      write: '1',
+	      move: _constants2.default.LEFT
+	    }, {
+	      read: _constants2.default.START,
+	      next: _constants2.default.ACCEPT,
+	      write: _constants2.default.START
+	    }]
 	  }
 	};
 	var store = (0, _redux.createStore)(_reducers2.default, initialState, middleware);
@@ -25214,8 +25212,10 @@
 	var machineReducer = exports.machineReducer = function machineReducer(action) {
 	  return function (state) {
 	    switch (action.type) {
-	      case _actions.types.RUN_MACHINE:
-	        return run(action, state);
+	      case _actions.types.FIND_MATCH:
+	        return findMatchingRule(action, state);
+	      case _actions.types.APPLY_MATCH:
+	        return applyMatchingRule(action, state);
 	      case _actions.types.SET_TAPE:
 	        return setTape(action, state);
 	      case _actions.types.RESET_MACHINE:
@@ -25226,63 +25226,90 @@
 	  };
 	};
 
-	var run = function run(action, state) {
-	  var machine = state.machine;
-	  var running = machine.running,
-	      tape = machine.tape,
-	      head = machine.head,
-	      node = machine.node,
-	      graph = machine.graph;
+	var findMatchingRule = function findMatchingRule(action, state) {
+	  var machine = state.machine,
+	      program = state.program,
+	      tape = state.tape;
+	  var head = machine.head,
+	      match = machine.match;
 
 
 	  var tapeValue = head < tape.length ? tape[head] : _constants2.default.BLANK;
-
-	  var edges = graph[node];
-	  var match = edges.filter(function (e) {
-	    return e.read.toString() === tapeValue.toString();
-	  }).pop();
-
-	  if (!match || match.next === _constants2.default.REJECT || match.next === _constants2.default.ACCEPT) {
+	  var ruleIdx = program[match.node].map(function (e) {
+	    return e.read;
+	  }).indexOf(tapeValue);
+	  var noMatchFound = ruleIdx === -1;
+	  if (noMatchFound || program[match.node][ruleIdx].next === _constants2.default.ACCEPT || program[match.node][ruleIdx].next === _constants2.default.REJECT) {
+	    // Halt the machine
 	    return _extends({}, state, {
 	      machine: _extends({}, machine, {
-	        running: false,
-	        match: !match ? _constants2.default.REJECT : match.next
+	        state: program[match.node][ruleIdx].next === _constants2.default.ACCEPT ? _constants2.default.ACCEPT : _constants2.default.REJECT,
+	        match: {
+	          node: match.node || null,
+	          ruleIdx: ruleIdx >= 0 ? ruleIdx : null
+	        }
+	      })
+	    });
+	  } else {
+	    // Keep running
+	    return _extends({}, state, {
+	      machine: _extends({}, machine, {
+	        state: _constants2.default.RUNNING,
+	        match: {
+	          node: match.node,
+	          ruleIdx: ruleIdx
+	        }
 	      })
 	    });
 	  }
+	};
 
-	  var nextHead = head + (match.move === _constants2.default.RIGHT ? 1 : head === 0 ? 0 : -1);
+	var applyMatchingRule = function applyMatchingRule(action, state) {
+	  var machine = state.machine,
+	      program = state.program,
+	      tape = state.tape;
+	  var head = machine.head,
+	      match = machine.match;
+
+	  var rule = program[match.node][match.ruleIdx];
+
+	  var nextHead = head + (rule.move === _constants2.default.RIGHT ? 1 : head === 0 ? 0 : -1);
 
 	  return _extends({}, state, {
 	    machine: _extends({}, machine, {
-	      running: true,
-	      match: null,
-	      tape: tape.slice(0, head).concat(match.write.toString()).concat(tape.slice(head + 1)).concat(nextHead === tape.length ? [_constants2.default.BLANK] : []),
 	      head: nextHead,
-	      node: match.next
-	    })
+	      match: {
+	        node: rule.next,
+	        ruleIdx: null
+	      }
+	    }),
+	    tape: tape.slice(0, head).concat(rule.write).concat(tape.slice(head + 1)).concat(nextHead === tape.length ? [_constants2.default.BLANK] : [])
 	  });
 	};
 
 	var resetMachine = function resetMachine(action, state) {
 	  return _extends({}, state, {
-	    machine: _extends({}, state.machine, {
+	    machine: {
+	      state: _constants2.default.VIRGIN,
 	      head: _constants2.default.HEAD_START,
-	      node: _constants2.default.INIT
-	    })
+	      match: {
+	        node: _constants2.default.INIT,
+	        ruleIdx: null
+	      }
+	    }
 	  });
 	};
 
 	var setTape = function setTape(action, state) {
-	  var newTape = state.machine.tape.map(function (current, idx) {
+	  var newTape = state.tape.map(function (current, idx) {
 	    return idx !== action.idx ? current : action.val === '' ? _constants2.default.BLANK : action.val;
 	  });
 
 	  if (newTape[newTape.length - 1] !== _constants2.default.BLANK && newTape[newTape.length - 1] !== '') newTape.push(_constants2.default.BLANK);
 
 	  return _extends({}, state, {
+	    tape: newTape,
 	    machine: _extends({}, state.machine, {
-	      tape: newTape,
 	      head: _constants2.default.HEAD_START
 	    })
 	  });
@@ -25301,25 +25328,32 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var types = {
-	  RUN_MACHINE: 'RUN_MACHINE',
+	  FIND_MATCH: 'FIND_MATCH',
+	  APPLY_MATCH: 'APPLY_MATCH',
 	  SET_TAPE: 'SET_TAPE',
 	  RESET_MACHINE: 'RESET_MACHINE'
 	};
 
 	var startMachine = function startMachine() {
 	  return function (dispatch, getState) {
-	    dispatch({ type: types.RESET_MACHINE });
-	    dispatch({ type: types.RUN_MACHINE });
 	    var intervalTime = 300; // ms
-	    var intervalId = setInterval(function () {
+	    var intervalId = void 0;
+
+	    dispatch({ type: types.RESET_MACHINE });
+	    dispatch({ type: types.FIND_MATCH });
+
+	    intervalId = setInterval(function () {
 	      var _getState = getState(),
 	          machine = _getState.machine;
 
-	      if (machine.running) {
-	        dispatch({ type: types.RUN_MACHINE });
+	      if (machine.state === _constants2.default.RUNNING) {
+	        dispatch({ type: types.APPLY_MATCH });
+	        dispatch({ type: types.FIND_MATCH });
 	      } else {
 	        clearInterval(intervalId);
-	        dispatch({ type: types.RESET_MACHINE });
+	        setTimeout(function () {
+	          return dispatch({ type: types.RESET_MACHINE });
+	        }, intervalTime);
 	      }
 	    }, intervalTime);
 	  };
@@ -25346,15 +25380,23 @@
 	'use strict';
 
 	module.exports = {
-	  LEFT: 'LEFT',
-	  RIGHT: 'RIGHT',
-	  INIT: 'A',
 	  NODE_NAMES: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
+
+	  // Machine states
+	  VIRGIN: 'VIRGIN',
+	  RUNNING: 'RUNNING',
 	  ACCEPT: 'ACCEPT',
 	  REJECT: 'REJECT',
+
+	  // Tape / instruction values
 	  BLANK: ' ',
 	  START: '#',
-	  HEAD_START: 1
+	  LEFT: 'LEFT',
+	  RIGHT: 'RIGHT',
+
+	  // Initial state
+	  HEAD_START: 1,
+	  INIT: 'A'
 	};
 
 /***/ }),
@@ -25362,8 +25404,6 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -25389,7 +25429,7 @@
 
 	var _program2 = _interopRequireDefault(_program);
 
-	var _app = __webpack_require__(245);
+	var _app = __webpack_require__(244);
 
 	var _app2 = _interopRequireDefault(_app);
 
@@ -25415,6 +25455,8 @@
 	    value: function render() {
 	      var _props = this.props,
 	          machine = _props.machine,
+	          tape = _props.tape,
+	          program = _props.program,
 	          startMachine = _props.startMachine,
 	          setTape = _props.setTape;
 
@@ -25423,16 +25465,20 @@
 	        { className: _app2.default.appContainer },
 	        _react2.default.createElement(_dashboard2.default, {
 	          startMachine: startMachine,
-	          running: machine.running,
-	          match: machine.match
+	          machine: machine
 	        }),
 	        _react2.default.createElement(
 	          'div',
 	          { className: _app2.default.appContent },
-	          _react2.default.createElement(_tape2.default, _extends({
-	            setTape: setTape
-	          }, machine)),
-	          _react2.default.createElement(_program2.default, { graph: machine.graph })
+	          _react2.default.createElement(_tape2.default, {
+	            setTape: setTape,
+	            tape: tape,
+	            machine: machine
+	          }),
+	          _react2.default.createElement(_program2.default, {
+	            program: program,
+	            machine: machine
+	          })
 	        )
 	      );
 	    }
@@ -25443,7 +25489,9 @@
 
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
-	    machine: state.machine
+	    machine: state.machine,
+	    tape: state.tape,
+	    program: state.program
 	  };
 	};
 
@@ -25507,8 +25555,11 @@
 	    }
 
 	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Dashboard.__proto__ || Object.getPrototypeOf(Dashboard)).call.apply(_ref, [this].concat(args))), _this), _this.getStatus = function () {
-	      if (_this.props.running) return 'RUNNING';
-	      switch (_this.props.match) {
+	      var machine = _this.props.machine;
+
+	      switch (machine.state) {
+	        case _constants2.default.RUNNING:
+	          return 'RUNNING';
 	        case _constants2.default.ACCEPT:
 	          return 'ACCEPT';
 	        case _constants2.default.REJECT:
@@ -25548,8 +25599,9 @@
 
 	Dashboard.propTypes = {
 	  startMachine: _propTypes2.default.func,
-	  running: _propTypes2.default.bool,
-	  match: _propTypes2.default.string
+	  machine: _propTypes2.default.shape({
+	    state: _propTypes2.default.string
+	  }).isRequired
 	};
 
 
@@ -25618,7 +25670,7 @@
 
 	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Tape.__proto__ || Object.getPrototypeOf(Tape)).call.apply(_ref, [this].concat(args))), _this), _this.handleKeyDown = function (idx) {
 	      return function (e) {
-	        if (e.key.length === 1) _this.props.setTape(idx, e.key);
+	        if (e.key.length === 1) _this.props.setTape(idx, e.key.toString());
 	        if (e.key === 'Backspace') _this.props.setTape(idx, _constants2.default.BLANK);
 	      };
 	    }, _this.handleFocus = function (e) {
@@ -25633,8 +25685,7 @@
 
 	      var _props = this.props,
 	          tape = _props.tape,
-	          head = _props.head,
-	          graph = _props.graph;
+	          machine = _props.machine;
 
 	      return _react2.default.createElement(
 	        'div',
@@ -25647,7 +25698,7 @@
 	              'span',
 	              { key: idx, className: _tape2.default.entryContainer },
 	              _react2.default.createElement('input', { readOnly: true, className: _tape2.default.start, value: _constants2.default.START }),
-	              head === idx && _react2.default.createElement(_arrowDropUp2.default, { className: _tape2.default.head })
+	              machine.head === idx && _react2.default.createElement(_arrowDropUp2.default, { className: _tape2.default.head })
 	            ) : _react2.default.createElement(
 	              'span',
 	              { key: idx, className: _tape2.default.entryContainer },
@@ -25660,7 +25711,7 @@
 	                onFocus: _this2.handleFocus,
 	                value: tape[idx]
 	              }),
-	              head === idx && _react2.default.createElement(_arrowDropUp2.default, { className: _tape2.default.head })
+	              machine.head === idx && _react2.default.createElement(_arrowDropUp2.default, { className: _tape2.default.head })
 	            );
 	          })
 	        )
@@ -25674,7 +25725,9 @@
 	Tape.propTypes = {
 	  setTape: _propTypes2.default.func,
 	  tape: _propTypes2.default.array,
-	  head: _propTypes2.default.number
+	  machine: _propTypes2.default.shape({
+	    head: _propTypes2.default.number
+	  }).isRequired
 	};
 
 
@@ -25838,7 +25891,7 @@
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _program = __webpack_require__(244);
+	var _program = __webpack_require__(245);
 
 	var _program2 = _interopRequireDefault(_program);
 
@@ -25854,15 +25907,32 @@
 	  _inherits(Program, _Component);
 
 	  function Program() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
 	    _classCallCheck(this, Program);
 
-	    return _possibleConstructorReturn(this, (Program.__proto__ || Object.getPrototypeOf(Program)).apply(this, arguments));
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Program.__proto__ || Object.getPrototypeOf(Program)).call.apply(_ref, [this].concat(args))), _this), _this.tagActiveNode = function (nodeName, className) {
+	      var isActiveNode = _this.props.machine.match.node === nodeName;
+	      return className + ' ' + (isActiveNode ? _program2.default.active : '');
+	    }, _this.tagActiveRule = function (ruleIdx, nodeName, className) {
+	      var isActiveNode = _this.props.machine.match.node === nodeName;
+	      var isActiveRule = _this.props.machine.match.ruleIdx === ruleIdx;
+	      return className + ' ' + (isActiveNode && isActiveRule ? _program2.default.active : '');
+	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
 
 	  _createClass(Program, [{
 	    key: 'render',
 	    value: function render() {
-	      var graph = this.props.graph;
+	      var _this2 = this;
+
+	      var program = this.props.program;
 
 	      return _react2.default.createElement(
 	        'div',
@@ -25875,7 +25945,11 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: _program2.default.node },
-	          _react2.default.createElement('div', { className: _program2.default.topHeader }),
+	          _react2.default.createElement(
+	            'div',
+	            { className: _program2.default.topHeader },
+	            'Node'
+	          ),
 	          _react2.default.createElement(
 	            'div',
 	            { className: _program2.default.nodeRules },
@@ -25905,22 +25979,22 @@
 	            )
 	          )
 	        ),
-	        Object.keys(graph).map(function (key) {
+	        Object.keys(program).map(function (nodeName) {
 	          return _react2.default.createElement(
 	            'div',
-	            { key: key, className: _program2.default.node },
+	            { key: nodeName, className: _this2.tagActiveNode(nodeName, _program2.default.node) },
 	            _react2.default.createElement(
 	              'div',
 	              { className: _program2.default.nodeHeader },
-	              key
+	              nodeName
 	            ),
 	            _react2.default.createElement(
 	              'div',
 	              { className: _program2.default.nodeRules },
-	              graph[key].map(function (rule, idx) {
+	              program[nodeName].map(function (rule, idx) {
 	                return _react2.default.createElement(
 	                  'div',
-	                  { key: idx, className: _program2.default.rule },
+	                  { key: idx, className: _this2.tagActiveRule(idx, nodeName, _program2.default.rule) },
 	                  _react2.default.createElement(
 	                    'span',
 	                    null,
@@ -25972,7 +26046,7 @@
 	                    null,
 	                    _react2.default.createElement(
 	                      'select',
-	                      { defaultValue: rule.write },
+	                      { defaultValue: rule.move },
 	                      _react2.default.createElement(
 	                        'option',
 	                        { value: 'RIGHT' },
@@ -25982,7 +26056,8 @@
 	                        'option',
 	                        { value: 'LEFT' },
 	                        'LEFT'
-	                      )
+	                      ),
+	                      _react2.default.createElement('option', { value: '' })
 	                    )
 	                  ),
 	                  _react2.default.createElement(
@@ -25990,7 +26065,7 @@
 	                    null,
 	                    _react2.default.createElement(
 	                      'select',
-	                      { defaultValue: rule.write },
+	                      { defaultValue: rule.next },
 	                      _react2.default.createElement(
 	                        'option',
 	                        { value: 'A' },
@@ -26000,6 +26075,11 @@
 	                        'option',
 	                        { value: 'B' },
 	                        'B'
+	                      ),
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: 'ACCEPT' },
+	                        'ACCEPT'
 	                      )
 	                    )
 	                  )
@@ -26015,6 +26095,17 @@
 	  return Program;
 	}(_react.Component);
 
+	Program.propTypes = {
+	  program: _propTypes2.default.object.isRequired,
+	  machine: _propTypes2.default.shape({
+	    match: _propTypes2.default.PropTypes.shape({
+	      node: _propTypes2.default.string,
+	      ruleIdx: _propTypes2.default.number
+	    }).isRequired
+	  }).isRequired
+	};
+
+
 	module.exports = Program;
 
 /***/ }),
@@ -26022,13 +26113,13 @@
 /***/ (function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
-	module.exports = {"node":"program__node","_nodeHeader":"program___nodeHeader","topHeader":"program__topHeader","nodeHeader":"program__nodeHeader","nodeRules":"program__nodeRules","rule":"program__rule","header":"program__header"};
 
 /***/ }),
 /* 245 */
 /***/ (function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
+	module.exports = {"node":"program__node","_nodeHeader":"program___nodeHeader","topHeader":"program__topHeader","nodeHeader":"program__nodeHeader","active":"program__active","nodeRules":"program__nodeRules","rule":"program__rule","header":"program__header"};
 
 /***/ })
 /******/ ]);

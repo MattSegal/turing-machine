@@ -10,20 +10,23 @@ class App extends Component
 {
   render()
   {
-    const {machine, startMachine, setTape} = this.props
+    const {machine, tape, program, startMachine, setTape} = this.props
     return (
       <div className={style.appContainer}>
         <Dashboard 
           startMachine={startMachine}
-          running={machine.running}
-          match={machine.match}
+          machine={machine}
         />
         <div className={style.appContent}>
           <Tape 
             setTape={setTape} 
-            {...machine} 
+            tape={tape}
+            machine={machine}
           />
-          <Program graph={machine.graph} />
+          <Program 
+            program={program} 
+            machine={machine}
+          />
         </div>
       </div>
     )
@@ -32,6 +35,8 @@ class App extends Component
 
 let mapStateToProps = (state) => ({
   machine: state.machine,
+  tape: state.tape,
+  program: state.program,
 })
 
 let mapDispatchToProps = (dispatch) => ({

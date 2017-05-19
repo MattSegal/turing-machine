@@ -21,50 +21,48 @@ const middleware = applyMiddleware(
 
 const initialState = {
   machine: {
-    running: false,
-    match: null,
-    tape: [CONST.START,1,0,1,1,0,0,CONST.BLANK],
+    state: CONST.VIRGIN,
     head: CONST.HEAD_START,
-    node: CONST.INIT,
-    graph: {
-      A: [
-        {
-          read: 1,
-          next: CONST.INIT,
-          write: 1,
-          move: CONST.RIGHT
-        },
-        {
-          read: 0,
-          next: CONST.INIT,
-          write: 1,
-          move: CONST.LEFT
-        },
-        {
-          read: CONST.BLANK,
-          next: 'B',
-          write: CONST.BLANK,
-          move: CONST.LEFT
-        },
-      ],
-      B: [
-        {
-          read: 1,
-          next: 'B',
-          write: 1,
-          move: CONST.LEFT
-        },
-        {
-          read: CONST.START,
-          next: CONST.ACCEPT,
-          write: CONST.START,
-        }
-      ]
-    },
-    boxes: {
-      A: {top: 20, left: 80},
-      B: {top: 180, left: 20}
+    match: {
+      node: CONST.INIT,
+      ruleIdx: null,
     }
+  },
+  tape: [CONST.START,'1','0','1','1','0','0',CONST.BLANK],
+  program: {
+    A: [
+      {
+        read: '1',
+        next: CONST.INIT,
+        write: '1',
+        move: CONST.RIGHT
+      },
+      {
+        read: '0',
+        next: CONST.INIT,
+        write: '1',
+        move: CONST.LEFT
+      },
+      {
+        read: CONST.BLANK,
+        next: 'B',
+        write: CONST.BLANK,
+        move: CONST.LEFT
+      },
+    ],
+    B: [
+      {
+        read: '1',
+        next: 'B',
+        write: '1',
+        move: CONST.LEFT
+      },
+      {
+        read: CONST.START,
+        next: CONST.ACCEPT,
+        write: CONST.START,
+      }
+    ]
   }
 }
 const store  = createStore(reducer, initialState, middleware)

@@ -14,6 +14,12 @@
         align-items: stretch;
     }
 
+    .node + .node {
+        margin-top: 2em;
+        padding-top: 1em;
+        border-top: 1px solid #ccc;
+    }
+
     ._nodeHeader {
         display: flex;
         align-items: center;
@@ -24,11 +30,16 @@
 
     .topHeader {
         @extend ._nodeHeader;
+        font-weight: bold;
     }
 
     .nodeHeader {
         @extend ._nodeHeader;
-        background-color: #ccc;
+    }
+
+    .active > .nodeHeader {
+        background-color: $active-color;
+        box-sizing: border-box;
     }
 
     .nodeRules {
@@ -59,6 +70,10 @@
 
         .header {
             font-weight: bold;
+        }
+
+        &.active select {
+            background-color: $active-color;
         }
     }
 }

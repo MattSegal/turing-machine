@@ -10,12 +10,14 @@ class Tape extends Component
   static propTypes = {
     setTape: PropTypes.func,
     tape: PropTypes.array, 
-    head: PropTypes.number,
+    machine : PropTypes.shape({
+      head: PropTypes.number,
+    }).isRequired,
   }
 
   handleKeyDown = (idx) => (e) => {
     if (e.key.length === 1)
-      this.props.setTape(idx, e.key)
+      this.props.setTape(idx, e.key.toString())
     if (e.key === 'Backspace')
       this.props.setTape(idx, CONST.BLANK)
   }
@@ -28,14 +30,14 @@ class Tape extends Component
 
   render()
   {
-    const {tape, head, graph} = this.props
+    const {tape, machine} = this.props
     return (
       <div>
         <div className={style.tapeContainer}>
           {tape.map((entry,  idx) => ( idx === 0
             ? <span key={idx} className={style.entryContainer}>
                 <input readOnly className={style.start} value={CONST.START} />
-                {head === idx && <MdArrowDropUp className={style.head} />}
+                {machine.head === idx && <MdArrowDropUp className={style.head} />}
               </span>
             : <span key={idx} className={style.entryContainer}>
                 <input
@@ -47,7 +49,7 @@ class Tape extends Component
                   onFocus={this.handleFocus}
                   value={tape[idx]}
                 />
-                {head === idx && <MdArrowDropUp className={style.head} />}
+                {machine.head === idx && <MdArrowDropUp className={style.head} />}
               </span>
           ))}
         </div>

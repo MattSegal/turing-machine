@@ -4,14 +4,35 @@ import style from 'scss/program.scss'
 
 class Program extends Component
 {
+  static propTypes = {
+    program: PropTypes.object.isRequired, 
+    machine: PropTypes.shape({
+      match: PropTypes.PropTypes.shape({
+        node: PropTypes.string,
+        ruleIdx: PropTypes.number,
+      }).isRequired,
+    }).isRequired,
+  }
+
+  tagActiveNode = (nodeName, className) => {
+    const isActiveNode = this.props.machine.match.node === nodeName
+    return `${className} ${isActiveNode ? style.active : ''}`
+  }
+
+  tagActiveRule = (ruleIdx, nodeName, className) => {
+    const isActiveNode = this.props.machine.match.node === nodeName
+    const isActiveRule = this.props.machine.match.ruleIdx === ruleIdx
+    return `${className} ${isActiveNode && isActiveRule ? style.active : ''}`
+  }
+
   render()
   {
-    const {graph} = this.props
+    const {program} = this.props
     return (
       <div>
         <h1>Program</h1>
         <div className={style.node}>
-            <div className={style.topHeader}></div>
+            <div className={style.topHeader}>Node</div>
             <div className={style.nodeRules}>
               <div className={style.rule}>
                 <span className={style.header}>Read</span>
@@ -21,12 +42,12 @@ class Program extends Component
               </div>
             </div>
           </div>
-        {Object.keys(graph).map(key => (
-          <div key={key} className={style.node}>
-            <div className={style.nodeHeader}>{key}</div>
+        {Object.keys(program).map(nodeName => (
+          <div key={nodeName} className={this.tagActiveNode(nodeName, style.node)}>
+            <div className={style.nodeHeader}>{nodeName}</div>
             <div className={style.nodeRules}>
-              {graph[key].map((rule, idx) => (
-                <div key={idx} className={style.rule}>
+              {program[nodeName].map((rule, idx) => (
+                <div key={idx} className={this.tagActiveRule(idx, nodeName, style.rule)}>
                   <span>
                     <select defaultValue={rule.read}>
                       <option value="0">0</option> 
@@ -42,15 +63,17 @@ class Program extends Component
                     </select>
                   </span>
                   <span>                    
-                    <select defaultValue={rule.write}>
+                    <select defaultValue={rule.move}>
                       <option value="RIGHT">RIGHT</option> 
                       <option value="LEFT">LEFT</option>
+                      <option value=""></option>
                     </select>
                   </span>
                   <span>                    
-                    <select defaultValue={rule.write}>
+                    <select defaultValue={rule.next}>
                       <option value="A">A</option> 
                       <option value="B">B</option>
+                      <option value="ACCEPT">ACCEPT</option>
                     </select>
                   </span>
                 </div>
