@@ -10,22 +10,22 @@ class App extends Component
 {
   render()
   {
-    const {machine, tape, program, startMachine, setTape} = this.props
     return (
       <div className={style.appContainer}>
         <Dashboard 
-          startMachine={startMachine}
-          machine={machine}
+          startMachine={this.props.startMachine}
+          machine={this.props.machine}
         />
         <div className={style.appContent}>
           <Tape 
-            setTape={setTape} 
-            tape={tape}
-            machine={machine}
+            setTape={this.props.setTape} 
+            tape={this.props.tape}
+            machine={this.props.machine}
           />
           <Program 
-            program={program} 
-            machine={machine}
+            program={this.props.program} 
+            machine={this.props.machine}
+            updateProgram={this.props.updateProgram}
           />
         </div>
       </div>
@@ -41,7 +41,8 @@ let mapStateToProps = (state) => ({
 
 let mapDispatchToProps = (dispatch) => ({
   startMachine: () => dispatch(Actions.startMachine()),
-  setTape: (idx, val) => dispatch(Actions.setTape(idx, val))
+  setTape: (idx, val) => dispatch(Actions.setTape(idx, val)),
+  updateProgram: (nodeName, rules) => dispatch(Actions.updateProgram(nodeName, rules)),
 })
 
 module.exports = connect(

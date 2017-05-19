@@ -32,7 +32,7 @@ const findMatchingRule = (action, state) => {
       ...state,
       machine: {
         ...machine,
-        state: program[match.node][ruleIdx].next === CONST.ACCEPT 
+        state: !noMatchFound && program[match.node][ruleIdx].next === CONST.ACCEPT 
           ? CONST.ACCEPT 
           : CONST.REJECT,
         match: {

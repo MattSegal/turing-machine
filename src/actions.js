@@ -5,7 +5,15 @@ const types = {
   APPLY_MATCH: 'APPLY_MATCH',
   SET_TAPE: 'SET_TAPE',
   RESET_MACHINE: 'RESET_MACHINE',
+  UPDATE_PROGRAM: 'UPDATE_PROGRAM',
+  ADD_NODE: 'ADD_NODE', // unimplemented 
 }
+
+const updateProgram = (nodeName, rules) => ({
+  type: types.UPDATE_PROGRAM,
+  nodeName: nodeName,
+  rules: rules,
+})
 
 const startMachine = () => (dispatch, getState) => {
   const intervalTime = 300 // ms
@@ -36,4 +44,5 @@ module.exports = {
     types,
     startMachine,
     setTape,
+    updateProgram,
 }

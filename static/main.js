@@ -25158,8 +25158,10 @@
 
 	var _machine = __webpack_require__(232);
 
+	var _program = __webpack_require__(246);
+
 	var reducer = function reducer(state, action) {
-	    return (0, _utilities.pipe)((0, _machine.machineReducer)(action))(state);
+	    return (0, _utilities.pipe)((0, _machine.machineReducer)(action), (0, _program.programReducer)(action))(state);
 	};
 
 	module.exports = reducer;
@@ -25243,7 +25245,7 @@
 	    // Halt the machine
 	    return _extends({}, state, {
 	      machine: _extends({}, machine, {
-	        state: program[match.node][ruleIdx].next === _constants2.default.ACCEPT ? _constants2.default.ACCEPT : _constants2.default.REJECT,
+	        state: !noMatchFound && program[match.node][ruleIdx].next === _constants2.default.ACCEPT ? _constants2.default.ACCEPT : _constants2.default.REJECT,
 	        match: {
 	          node: match.node || null,
 	          ruleIdx: ruleIdx >= 0 ? ruleIdx : null
@@ -25331,7 +25333,16 @@
 	  FIND_MATCH: 'FIND_MATCH',
 	  APPLY_MATCH: 'APPLY_MATCH',
 	  SET_TAPE: 'SET_TAPE',
-	  RESET_MACHINE: 'RESET_MACHINE'
+	  RESET_MACHINE: 'RESET_MACHINE',
+	  UPDATE_PROGRAM: 'UPDATE_PROGRAM',
+	  ADD_NODE: 'ADD_NODE' };
+
+	var updateProgram = function updateProgram(nodeName, rules) {
+	  return {
+	    type: types.UPDATE_PROGRAM,
+	    nodeName: nodeName,
+	    rules: rules
+	  };
 	};
 
 	var startMachine = function startMachine() {
@@ -25370,7 +25381,8 @@
 	module.exports = {
 	  types: types,
 	  startMachine: startMachine,
-	  setTape: setTape
+	  setTape: setTape,
+	  updateProgram: updateProgram
 	};
 
 /***/ }),
@@ -25453,31 +25465,25 @@
 	  _createClass(App, [{
 	    key: 'render',
 	    value: function render() {
-	      var _props = this.props,
-	          machine = _props.machine,
-	          tape = _props.tape,
-	          program = _props.program,
-	          startMachine = _props.startMachine,
-	          setTape = _props.setTape;
-
 	      return _react2.default.createElement(
 	        'div',
 	        { className: _app2.default.appContainer },
 	        _react2.default.createElement(_dashboard2.default, {
-	          startMachine: startMachine,
-	          machine: machine
+	          startMachine: this.props.startMachine,
+	          machine: this.props.machine
 	        }),
 	        _react2.default.createElement(
 	          'div',
 	          { className: _app2.default.appContent },
 	          _react2.default.createElement(_tape2.default, {
-	            setTape: setTape,
-	            tape: tape,
-	            machine: machine
+	            setTape: this.props.setTape,
+	            tape: this.props.tape,
+	            machine: this.props.machine
 	          }),
 	          _react2.default.createElement(_program2.default, {
-	            program: program,
-	            machine: machine
+	            program: this.props.program,
+	            machine: this.props.machine,
+	            updateProgram: this.props.updateProgram
 	          })
 	        )
 	      );
@@ -25502,6 +25508,9 @@
 	    },
 	    setTape: function setTape(idx, val) {
 	      return dispatch(_actions2.default.setTape(idx, val));
+	    },
+	    updateProgram: function updateProgram(nodeName, rules) {
+	      return dispatch(_actions2.default.updateProgram(nodeName, rules));
 	    }
 	  };
 	};
@@ -25881,6 +25890,8 @@
 
 	'use strict';
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(2);
@@ -25894,6 +25905,10 @@
 	var _program = __webpack_require__(245);
 
 	var _program2 = _interopRequireDefault(_program);
+
+	var _constants = __webpack_require__(234);
+
+	var _constants2 = _interopRequireDefault(_constants);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25924,6 +25939,40 @@
 	      var isActiveNode = _this.props.machine.match.node === nodeName;
 	      var isActiveRule = _this.props.machine.match.ruleIdx === ruleIdx;
 	      return className + ' ' + (isActiveNode && isActiveRule ? _program2.default.active : '');
+	    }, _this.handleSelect = function (operation, ruleIdx, nodeName) {
+	      return function (e) {
+	        var newRule = void 0;
+	        switch (operation) {
+	          case 'READ':
+	            newRule = _extends({}, _this.props.program[nodeName][ruleIdx], {
+	              read: e.target.value
+	            });
+	            break;
+	          case 'WRITE':
+	            newRule = _extends({}, _this.props.program[nodeName][ruleIdx], {
+	              write: e.target.value
+	            });
+	            break;
+	          case 'MOVE':
+	            newRule = _extends({}, _this.props.program[nodeName][ruleIdx], {
+	              move: e.target.value
+	            });
+	            break;
+	          case 'NEXT':
+	            newRule = _extends({}, _this.props.program[nodeName][ruleIdx], {
+	              next: e.target.value
+	            });
+	            break;
+	          default:
+	            return;
+	        }
+	        console.log(newRule);
+
+	        var newRules = _this.props.program[nodeName].map(function (rule, idx) {
+	          return idx === ruleIdx ? newRule : rule;
+	        });
+	        _this.props.updateProgram(nodeName, newRules);
+	      };
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
 
@@ -26000,7 +26049,10 @@
 	                    null,
 	                    _react2.default.createElement(
 	                      'select',
-	                      { defaultValue: rule.read },
+	                      {
+	                        onChange: _this2.handleSelect('READ', idx, nodeName),
+	                        defaultValue: rule.read
+	                      },
 	                      _react2.default.createElement(
 	                        'option',
 	                        { value: '0' },
@@ -26015,6 +26067,11 @@
 	                        'option',
 	                        { value: '#' },
 	                        '#'
+	                      ),
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: _constants2.default.BLANK },
+	                        _constants2.default.BLANK
 	                      )
 	                    )
 	                  ),
@@ -26023,7 +26080,10 @@
 	                    null,
 	                    _react2.default.createElement(
 	                      'select',
-	                      { defaultValue: rule.write },
+	                      {
+	                        onChange: _this2.handleSelect('WRITE', idx, nodeName),
+	                        defaultValue: rule.write
+	                      },
 	                      _react2.default.createElement(
 	                        'option',
 	                        { value: '0' },
@@ -26038,6 +26098,11 @@
 	                        'option',
 	                        { value: '#' },
 	                        '#'
+	                      ),
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: _constants2.default.BLANK },
+	                        _constants2.default.BLANK
 	                      )
 	                    )
 	                  ),
@@ -26046,7 +26111,10 @@
 	                    null,
 	                    _react2.default.createElement(
 	                      'select',
-	                      { defaultValue: rule.move },
+	                      {
+	                        onChange: _this2.handleSelect('MOVE', idx, nodeName),
+	                        defaultValue: rule.move
+	                      },
 	                      _react2.default.createElement(
 	                        'option',
 	                        { value: 'RIGHT' },
@@ -26065,7 +26133,10 @@
 	                    null,
 	                    _react2.default.createElement(
 	                      'select',
-	                      { defaultValue: rule.next },
+	                      {
+	                        onChange: _this2.handleSelect('NEXT', idx, nodeName),
+	                        defaultValue: rule.next
+	                      },
 	                      _react2.default.createElement(
 	                        'option',
 	                        { value: 'A' },
@@ -26102,7 +26173,8 @@
 	      node: _propTypes2.default.string,
 	      ruleIdx: _propTypes2.default.number
 	    }).isRequired
-	  }).isRequired
+	  }).isRequired,
+	  updateProgram: _propTypes2.default.func
 	};
 
 
@@ -26120,6 +26192,46 @@
 
 	// removed by extract-text-webpack-plugin
 	module.exports = {"node":"program__node","_nodeHeader":"program___nodeHeader","topHeader":"program__topHeader","nodeHeader":"program__nodeHeader","active":"program__active","nodeRules":"program__nodeRules","rule":"program__rule","header":"program__header"};
+
+/***/ }),
+/* 246 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.programReducer = undefined;
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _actions = __webpack_require__(233);
+
+	var _constants = __webpack_require__(234);
+
+	var _constants2 = _interopRequireDefault(_constants);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	var programReducer = exports.programReducer = function programReducer(action) {
+	  return function (state) {
+	    switch (action.type) {
+	      case _actions.types.UPDATE_PROGRAM:
+	        return updateProgram(action, state);
+	      default:
+	        return _extends({}, state);
+	    }
+	  };
+	};
+
+	var updateProgram = function updateProgram(action, state) {
+	  return _extends({}, state, {
+	    program: _extends({}, state.program, _defineProperty({}, action.nodeName, action.rules))
+	  });
+	};
 
 /***/ })
 /******/ ]);

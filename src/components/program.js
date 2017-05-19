@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import style from 'scss/program.scss'
+import CONST from 'constants'
 
 class Program extends Component
 {
@@ -12,6 +13,7 @@ class Program extends Component
         ruleIdx: PropTypes.number,
       }).isRequired,
     }).isRequired,
+    updateProgram: PropTypes.func,
   }
 
   tagActiveNode = (nodeName, className) => {
@@ -23,6 +25,44 @@ class Program extends Component
     const isActiveNode = this.props.machine.match.node === nodeName
     const isActiveRule = this.props.machine.match.ruleIdx === ruleIdx
     return `${className} ${isActiveNode && isActiveRule ? style.active : ''}`
+  }
+
+  handleSelect = (operation, ruleIdx, nodeName) => (e) => {
+    let newRule
+    switch(operation) {
+      case 'READ':
+        newRule = {
+          ...(this.props.program[nodeName][ruleIdx]),
+          read: e.target.value
+        }
+        break
+      case 'WRITE':
+        newRule = {
+          ...(this.props.program[nodeName][ruleIdx]),
+          write: e.target.value
+        }
+        break
+      case 'MOVE':
+        newRule = {
+          ...(this.props.program[nodeName][ruleIdx]),
+          move: e.target.value
+        }
+        break
+      case 'NEXT':
+        newRule = {
+          ...(this.props.program[nodeName][ruleIdx]),
+          next: e.target.value
+        }
+        break
+      default:
+        return
+    }
+    console.log(newRule)
+
+    const newRules = this.props.program[nodeName].map((rule, idx) =>
+      idx === ruleIdx ? newRule : rule
+    )
+    this.props.updateProgram(nodeName, newRules)
   }
 
   render()
@@ -49,28 +89,42 @@ class Program extends Component
               {program[nodeName].map((rule, idx) => (
                 <div key={idx} className={this.tagActiveRule(idx, nodeName, style.rule)}>
                   <span>
-                    <select defaultValue={rule.read}>
+                    <select
+                      onChange={this.handleSelect('READ', idx, nodeName)}
+                      defaultValue={rule.read}
+                    >
                       <option value="0">0</option> 
                       <option value="1">1</option>
                       <option value="#">#</option>
+                      <option value={CONST.BLANK}>{CONST.BLANK}</option>
                     </select>
                   </span>
                   <span>
-                    <select defaultValue={rule.write}>
+                    <select
+                      onChange={this.handleSelect('WRITE', idx, nodeName)}
+                      defaultValue={rule.write}
+                    >
                       <option value="0">0</option> 
                       <option value="1">1</option>
                       <option value="#">#</option>
+                      <option value={CONST.BLANK}>{CONST.BLANK}</option>
                     </select>
                   </span>
                   <span>                    
-                    <select defaultValue={rule.move}>
+                    <select
+                      onChange={this.handleSelect('MOVE', idx, nodeName)}
+                      defaultValue={rule.move}
+                    >
                       <option value="RIGHT">RIGHT</option> 
                       <option value="LEFT">LEFT</option>
                       <option value=""></option>
                     </select>
                   </span>
                   <span>                    
-                    <select defaultValue={rule.next}>
+                    <select
+                      onChange={this.handleSelect('NEXT', idx, nodeName)}
+                      defaultValue={rule.next}
+                    >
                       <option value="A">A</option> 
                       <option value="B">B</option>
                       <option value="ACCEPT">ACCEPT</option>
