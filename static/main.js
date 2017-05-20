@@ -25791,7 +25791,7 @@
 	                onChange: function onChange() {},
 	                maxLength: '1',
 	                className: _tape2.default.entry,
-	                onKeyDown: _this2.handleKeyDown(idx),
+	                onKeyPress: _this2.handleKeyDown(idx),
 	                onFocus: _this2.handleFocus,
 	                value: tape[idx]
 	              }),

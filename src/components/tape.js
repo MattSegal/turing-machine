@@ -44,7 +44,7 @@ class Tape extends Component
                   onChange={()=>{}}
                   maxLength="1"
                   className={style.entry}
-                  onKeyDown={this.handleKeyDown(idx)}
+                  onKeyPress={this.handleKeyDown(idx)}
                   onFocus={this.handleFocus}
                   value={tape[idx]}
                 />
