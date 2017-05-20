@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import CONST from 'constants'
 import style from 'scss/tape.scss'
-import FaStarO from 'react-icons/lib/fa/star-o'
 import MdArrowDropUp from 'react-icons/lib/md/arrow-drop-up'
 
 class Tape extends Component

@@ -87,7 +87,6 @@ const applyMatchingRule = (action, state) => {
 const resetMachine = (action, state) => ({
   ...state,
   machine: {
-    state: CONST.VIRGIN,
     head: CONST.HEAD_START,
     match: {
       node: CONST.INIT,

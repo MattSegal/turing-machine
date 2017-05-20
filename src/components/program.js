@@ -109,7 +109,7 @@ class Program extends Component
                       onChange={this.handleSelect('MOVE', idx, nodeName)}
                       defaultValue={rule.move}
                     >
-                      <option value="RIGHT">RIGHT</option> 
+                      <option value="RIGHT">RIGHT</option>
                       <option value="LEFT">LEFT</option>
                       <option value={CONST.BLANK}>{CONST.BLANK}</option>
                     </select>

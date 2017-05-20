@@ -28,7 +28,7 @@ const initialState = {
       ruleIdx: null,
     }
   },
-  tape: [CONST.START,'1','0','1','1','0','0',CONST.BLANK],
+  tape: [CONST.START,'1','0','1','1','0','0',CONST.BLANK,CONST.BLANK,CONST.BLANK],
   program: {
     A: [
       {

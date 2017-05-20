@@ -12,11 +12,6 @@ class App extends Component
   {
     return (
       <div className={style.appContainer}>
-        <Dashboard 
-          startMachine={this.props.startMachine}
-          machine={this.props.machine}
-        />
-
         <div className={style.appContent}>
           <Tape 
             setTape={this.props.setTape} 
@@ -28,6 +23,10 @@ class App extends Component
             machine={this.props.machine}
             updateProgram={this.props.updateProgram}
           />
+        <Dashboard 
+          startMachine={this.props.startMachine}
+          machine={this.props.machine}
+        />
         </div>
       </div>
     )
