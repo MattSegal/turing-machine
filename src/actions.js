@@ -23,7 +23,7 @@ const updateProgram = (nodeName, ruleIdx, newRule) => ({
 })
 
 const startMachine = () => (dispatch, getState) => {
-  const intervalTime = 500 // ms
+  const intervalTime = 100 // ms
   let intervalId
 
   dispatch({type: types.RESET_MACHINE}) 
