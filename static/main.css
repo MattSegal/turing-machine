@@ -7,12 +7,12 @@ html, body, h1, h2, h3 {
   margin: 0;
   padding: 0; }
 .dashboard__dashboardContainer {
-  width: 250px;
+  width: 300px;
   box-sizing: border-box;
   padding: 1em;
   background-color: #eee; }
   .dashboard__dashboardContainer h4, .dashboard__dashboardContainer p {
-    margin: 0.3em; }
+    margin: 0.3em 0; }
   .dashboard__dashboardContainer p {
     padding: 0 10px;
     font-size: 12px; }
@@ -107,7 +107,7 @@ h1 {
   font-weight: bold; }
 
 .program__active > .program__nodeHeader {
-  background-color: #fcc;
+  background-color: #bbe;
   box-sizing: border-box; }
 
 .program__nodeRules {
@@ -139,7 +139,7 @@ h1 {
   .program__rule .program__header {
     font-weight: bold; }
   .program__rule.program__active select {
-    background-color: #fcc; }
+    background-color: #bbe; }
 .app__appContainer {
   display: -webkit-flex;
   display: -ms-flexbox;

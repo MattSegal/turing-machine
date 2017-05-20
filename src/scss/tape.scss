@@ -1,6 +1,6 @@
-:local {
-    $blue: #99e;
+@import 'constants';
 
+:local {
     .status {
         text-align: center;
     }

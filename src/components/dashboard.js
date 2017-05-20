@@ -41,7 +41,7 @@ class Dashboard extends Component
     return (
       <div className={style.dashboardContainer}>
         {button('Start', startMachine)}
-        <h4>STATUS - {this.getStatus()}</h4>
+        <h4>STATUS: {this.getStatus()}</h4>
         {programs.map((p, idx) => (
           <div key={idx} className={style.savedProgram}>
             <h4>{p.title}</h4>

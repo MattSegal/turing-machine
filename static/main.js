@@ -82,7 +82,7 @@
 
 	var _constants2 = _interopRequireDefault(_constants);
 
-	var _programs = __webpack_require__(246);
+	var _programs = __webpack_require__(239);
 
 	var _programs2 = _interopRequireDefault(_programs);
 
@@ -25516,15 +25516,15 @@
 
 	var _dashboard2 = _interopRequireDefault(_dashboard);
 
-	var _tape = __webpack_require__(239);
+	var _tape = __webpack_require__(240);
 
 	var _tape2 = _interopRequireDefault(_tape);
 
-	var _program = __webpack_require__(243);
+	var _program = __webpack_require__(244);
 
 	var _program2 = _interopRequireDefault(_program);
 
-	var _app = __webpack_require__(245);
+	var _app = __webpack_require__(246);
 
 	var _app2 = _interopRequireDefault(_app);
 
@@ -25628,7 +25628,7 @@
 
 	var _constants2 = _interopRequireDefault(_constants);
 
-	var _programs = __webpack_require__(246);
+	var _programs = __webpack_require__(239);
 
 	var _programs2 = _interopRequireDefault(_programs);
 
@@ -25697,7 +25697,7 @@
 	        _react2.default.createElement(
 	          'h4',
 	          null,
-	          'STATUS - ',
+	          'STATUS: ',
 	          this.getStatus()
 	        ),
 	        _programs2.default.map(function (p, idx) {
@@ -25750,6 +25750,40 @@
 
 	'use strict';
 
+	var _constants = __webpack_require__(234);
+
+	var _constants2 = _interopRequireDefault(_constants);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var programs = [{
+	  title: 'Blank Program',
+	  description: 'Does nothing',
+	  tape: [_constants2.default.START, '0', '1', _constants2.default.BLANK, _constants2.default.BLANK, _constants2.default.BLANK],
+	  program: {
+	    A: [_constants2.default.BLANK_RULE]
+	  }
+	}, {
+	  title: '0n1n Checker',
+	  description: 'Accepts a string of n 0s followed by n 1s',
+	  tape: [_constants2.default.START, '0', '0', '0', '1', '1', '1', _constants2.default.BLANK, _constants2.default.BLANK],
+	  program: {
+	    A: [{ read: '0', write: '!', move: _constants2.default.RIGHT, next: 'B' }, _constants2.default.BLANK_RULE],
+	    B: [{ read: '0', write: '0', move: _constants2.default.RIGHT, next: 'B' }, { read: '$', write: '$', move: _constants2.default.RIGHT, next: 'B' }, { read: '1', write: '$', move: _constants2.default.RIGHT, next: 'C' }, _constants2.default.BLANK_RULE],
+	    C: [{ read: '1', write: '1', move: _constants2.default.LEFT, next: 'C' }, { read: '$', write: '$', move: _constants2.default.LEFT, next: 'C' }, { read: '0', write: '0', move: _constants2.default.LEFT, next: 'C' }, { read: '!', write: '!', move: _constants2.default.RIGHT, next: 'A' }, { read: ' ', write: ' ', move: _constants2.default.LEFT, next: 'D' }, _constants2.default.BLANK_RULE],
+	    D: [{ read: '$', write: '$', move: _constants2.default.LEFT, next: 'D' }, { read: '!', write: '!', move: _constants2.default.LEFT, next: 'D' }, { read: '#', write: '#', move: ' ', next: 'ACCEPT' }, _constants2.default.BLANK_RULE],
+	    E: [_constants2.default.BLANK_RULE]
+	  }
+	}];
+
+	module.exports = programs;
+
+/***/ }),
+/* 240 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(2);
@@ -25764,11 +25798,11 @@
 
 	var _constants2 = _interopRequireDefault(_constants);
 
-	var _tape = __webpack_require__(240);
+	var _tape = __webpack_require__(241);
 
 	var _tape2 = _interopRequireDefault(_tape);
 
-	var _arrowDropUp = __webpack_require__(241);
+	var _arrowDropUp = __webpack_require__(242);
 
 	var _arrowDropUp2 = _interopRequireDefault(_arrowDropUp);
 
@@ -25860,14 +25894,14 @@
 	module.exports = Tape;
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 	module.exports = {"status":"tape__status","tapeContainer":"tape__tapeContainer","_entry":"tape___entry","start":"tape__start","entry":"tape__entry","entryContainer":"tape__entryContainer","head":"tape__head"};
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25882,7 +25916,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactIconBase = __webpack_require__(242);
+	var _reactIconBase = __webpack_require__(243);
 
 	var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -25904,7 +25938,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25965,7 +25999,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25982,7 +26016,7 @@
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _program = __webpack_require__(244);
+	var _program = __webpack_require__(245);
 
 	var _program2 = _interopRequireDefault(_program);
 
@@ -26176,52 +26210,18 @@
 	module.exports = Program;
 
 /***/ }),
-/* 244 */
+/* 245 */
 /***/ (function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 	module.exports = {"node":"program__node","_nodeHeader":"program___nodeHeader","topHeader":"program__topHeader","nodeHeader":"program__nodeHeader","active":"program__active","nodeRules":"program__nodeRules","rule":"program__rule","header":"program__header"};
 
 /***/ }),
-/* 245 */
+/* 246 */
 /***/ (function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 	module.exports = {"appContainer":"app__appContainer","appContent":"app__appContent"};
-
-/***/ }),
-/* 246 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _constants = __webpack_require__(234);
-
-	var _constants2 = _interopRequireDefault(_constants);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var programs = [{
-	  title: 'Blank Program',
-	  description: 'Does nothing',
-	  tape: [_constants2.default.START, '0', '1', _constants2.default.BLANK, _constants2.default.BLANK, _constants2.default.BLANK],
-	  program: {
-	    A: [_constants2.default.BLANK_RULE]
-	  }
-	}, {
-	  title: '0n1n Checker',
-	  description: 'Accepts a string of n 0s followed by n 1s',
-	  tape: [_constants2.default.START, '0', '0', '0', '1', '1', '1', _constants2.default.BLANK, _constants2.default.BLANK],
-	  program: {
-	    A: [{ read: '0', write: '!', move: _constants2.default.RIGHT, next: 'B' }, _constants2.default.BLANK_RULE],
-	    B: [{ read: '0', write: '0', move: _constants2.default.RIGHT, next: 'B' }, { read: '$', write: '$', move: _constants2.default.RIGHT, next: 'B' }, { read: '1', write: '$', move: _constants2.default.RIGHT, next: 'C' }, _constants2.default.BLANK_RULE],
-	    C: [{ read: '1', write: '1', move: _constants2.default.LEFT, next: 'C' }, { read: '$', write: '$', move: _constants2.default.LEFT, next: 'C' }, { read: '0', write: '0', move: _constants2.default.LEFT, next: 'C' }, { read: '!', write: '!', move: _constants2.default.RIGHT, next: 'A' }, { read: ' ', write: ' ', move: _constants2.default.LEFT, next: 'D' }, _constants2.default.BLANK_RULE],
-	    D: [{ read: '$', write: '$', move: _constants2.default.LEFT, next: 'D' }, { read: '!', write: '!', move: _constants2.default.LEFT, next: 'D' }, { read: '#', write: '#', move: ' ', next: 'ACCEPT' }, _constants2.default.BLANK_RULE],
-	    E: [_constants2.default.BLANK_RULE]
-	  }
-	}];
-
-	module.exports = programs;
 
 /***/ })
 /******/ ]);
