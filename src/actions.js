@@ -6,8 +6,14 @@ const types = {
   SET_TAPE: 'SET_TAPE',
   RESET_MACHINE: 'RESET_MACHINE',
   UPDATE_PROGRAM: 'UPDATE_PROGRAM',
-  ADD_NODE: 'ADD_NODE', // unimplemented 
+  LOAD_PROGRAM: 'LOAD_PROGRAM',
 }
+
+const loadProgram = (program, tape) => ({
+  type: types.LOAD_PROGRAM,
+  program: program,
+  tape: tape,
+})
 
 const updateProgram = (nodeName, ruleIdx, newRule) => ({
   type: types.UPDATE_PROGRAM,
@@ -45,5 +51,6 @@ module.exports = {
     types,
     startMachine,
     setTape,
+    loadProgram,
     updateProgram,
 }

@@ -12,6 +12,11 @@ class App extends Component
   {
     return (
       <div className={style.appContainer}>
+        <Dashboard 
+          startMachine={this.props.startMachine}
+          loadProgram={this.props.loadProgram}
+          machine={this.props.machine}
+        />
         <div className={style.appContent}>
           <Tape 
             setTape={this.props.setTape} 
@@ -23,10 +28,6 @@ class App extends Component
             machine={this.props.machine}
             updateProgram={this.props.updateProgram}
           />
-        <Dashboard 
-          startMachine={this.props.startMachine}
-          machine={this.props.machine}
-        />
         </div>
       </div>
     )
@@ -42,6 +43,7 @@ let mapStateToProps = (state) => ({
 let mapDispatchToProps = (dispatch) => ({
   startMachine: () => dispatch(Actions.startMachine()),
   setTape: (idx, val) => dispatch(Actions.setTape(idx, val)),
+  loadProgram: (program, tape) => dispatch(Actions.loadProgram(program, tape)),
   updateProgram: (nodeName, ruleIdx, newRule) => dispatch(Actions.updateProgram(nodeName, ruleIdx, newRule)),
 })
 

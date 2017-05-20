@@ -2,20 +2,33 @@
 
 :local {
     .dashboardContainer {
-        padding: 20px 0;
-        max-width: 300px;
-        margin: 0 auto;
-        height: 100px;
+        width: 250px;
         box-sizing: border-box;
+        padding: 1em;
+        background-color: #eee;
+
+
+        h4, p {
+            margin: 0.3em;
+        }
+
+        p {
+            padding: 0 10px;
+            font-size: 12px;
+        }
     }
 
-    button {
+    .button {
         width: 100%;
         padding: 5px;
-        margin-bottom: 1em;
+        display: block;
+        background: #ccc;
+        border: none;
+        cursor: pointer;
     }
 
-    h3 {
-        text-align: center;
+
+    .savedProgram {
+        margin-top: 2em;
     }
 }

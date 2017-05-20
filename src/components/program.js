@@ -60,6 +60,15 @@ class Program extends Component
     this.props.updateProgram(nodeName, ruleIdx, newRule)
   }
 
+  selector = (nodeName, ruleIdx, fieldName, value, options) => (
+     <select
+      onChange={this.handleSelect(fieldName, ruleIdx, nodeName)}
+      value={value}
+    >
+      {options.map((chr, idx) => <option key={idx} value={chr}>{chr}</option>)}
+    </select>
+  )
+
   render()
   {
     const {program} = this.props
@@ -83,47 +92,24 @@ class Program extends Component
               {program[nodeName].map((rule, idx) => (
                 <div key={idx} className={this.tagActiveRule(idx, nodeName, style.rule)}>
                   <span>
-                    <select
-                      onChange={this.handleSelect('READ', idx, nodeName)}
-                      defaultValue={rule.read}
-                    >
-                      <option value="0">0</option> 
-                      <option value="1">1</option>
-                      <option value="#">#</option>
-                      <option value={CONST.BLANK}>{CONST.BLANK}</option>
-                    </select>
+                    {this.selector(nodeName, idx, 'READ', rule.read, 
+                      ["0", "1", "#", "!", "$", "&", CONST.BLANK]
+                    )}
                   </span>
                   <span>
-                    <select
-                      onChange={this.handleSelect('WRITE', idx, nodeName)}
-                      defaultValue={rule.write}
-                    >
-                      <option value="0">0</option> 
-                      <option value="1">1</option>
-                      <option value="#">#</option>
-                      <option value={CONST.BLANK}>{CONST.BLANK}</option>
-                    </select>
+                    {this.selector(nodeName, idx, 'WRITE', rule.write, 
+                      ["0", "1", "!", "$", "&", CONST.BLANK]
+                    )}
                   </span>
-                  <span>                    
-                    <select
-                      onChange={this.handleSelect('MOVE', idx, nodeName)}
-                      defaultValue={rule.move}
-                    >
-                      <option value="RIGHT">RIGHT</option>
-                      <option value="LEFT">LEFT</option>
-                      <option value={CONST.BLANK}>{CONST.BLANK}</option>
-                    </select>
+                  <span>  
+                    {this.selector(nodeName, idx, 'MOVE', rule.move, 
+                      ["RIGHT", "LEFT", CONST.BLANK]
+                    )}                  
                   </span>
-                  <span>                    
-                    <select
-                      onChange={this.handleSelect('NEXT', idx, nodeName)}
-                      defaultValue={rule.next}
-                    >
-                      {Object.keys(program).concat(['ACCEPT', CONST.BLANK])
-                      .map((_nodeName, _idx) =>
-                        <option key={_idx} value={_nodeName}>{_nodeName}</option> 
-                      )}
-                    </select>
+                  <span>    
+                    {this.selector(nodeName, idx, 'NEXT', rule.next, 
+                      Object.keys(program).concat(['ACCEPT', CONST.BLANK])
+                    )}                
                   </span>
                 </div>
               ))}

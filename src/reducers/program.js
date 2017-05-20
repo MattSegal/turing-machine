@@ -7,40 +7,58 @@ export const programReducer = (action) => (state) =>
   switch(action.type)
   {
     case types.UPDATE_PROGRAM:      return updateProgram(action, state)
+    case types.LOAD_PROGRAM:        return loadProgram(action, state)
     default:                        return {...state}
   }
 }
 
+const loadProgram = (action, state) => ({
+    ...state,
+    machine: {
+      ...state.machine,
+      state: CONST.VIRGIN
+    },
+    program: action.program,
+    tape: action.tape,
+})
+
 const updateProgram = (action, state) => {
-  
-  // Ensure that there is always a blank node
   const nodeNames = Object.keys(state.program)
-  const lastNodeName = Object.keys(state.program).sort().pop()
-  const newNodeName = getNewNodeName(lastNodeName)
+  const newProgram = nodeNames.reduce((program, nodeName) => {
+    // Update the changed rule
+    if (nodeName === action.nodeName) {
+      program[nodeName] = state.program[nodeName].map((rule, idx) =>
+        idx === action.ruleIdx ? action.newRule : rule
+      )
+    } else {
+      program[nodeName] = state.program[nodeName]
+    }
+    
+    // Ensure that there is always a blank rule for each node
+    const lastRule = program[nodeName].slice(-1)[0] 
+    if (!isRuleBlank(lastRule)) {
+      program[nodeName] = program[nodeName].concat(CONST.BLANK_RULE)
+    }
+    return program
+  }, {})
+
+  // Ensure that there is always a blank node at the end
+  const lastNodeName = nodeNames.sort().slice(-1)[0] 
+  const allRulesBlank = newProgram[lastNodeName]
+    .reduce((bool, rule) => bool && isRuleBlank(rule), true)
+
+  if (!allRulesBlank) {
+    newProgram[getNewNodeName(lastNodeName)] = [CONST.BLANK_RULE]
+  }
 
   return {
     ...state,
-    program: nodeNames.reduce((program, nodeName) => {
-
-      // Update the changed rule
-      if (nodeName === action.nodeName) {
-        program[nodeName] = state.program[nodeName].map((rule, idx) =>
-          idx === action.ruleIdx ? action.newRule : rule
-        )
-      } else {
-        program[nodeName] = state.program[nodeName]
-      }
-      
-      
-      // Ensure that there is always a blank rule for each node
-      const lastRule = program[nodeName][program[nodeName].length - 1]
-      if (lastRule.next !== CONST.BLANK && lastRule.move !== CONST.BLANK) {
-        program[nodeName] = program[nodeName].concat(CONST.BLANK_RULE)
-      }
-
-      return program
-    }, {}),
+    program: newProgram,
   }
+}
+
+const isRuleBlank = rule => {
+  return rule.next === CONST.BLANK && rule.move === CONST.BLANK
 }
 
 const getNewNodeName = (lastNodeName) => {

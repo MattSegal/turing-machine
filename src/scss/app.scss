@@ -2,9 +2,11 @@
 
 :local {
     .appContainer {
-        
+        display: flex;
+        height: 100%;
     }
     .appContent {
         padding-top: 2em;
+        width: 100%;
     }
 }

@@ -1,4 +1,4 @@
-html, body {
+#react-root, html, body {
   width: 100%;
   height: 100%;
   font-family: Arial, sans-serif; }
@@ -7,19 +7,26 @@ html, body, h1, h2, h3 {
   margin: 0;
   padding: 0; }
 .dashboard__dashboardContainer {
-  padding: 20px 0;
-  max-width: 300px;
-  margin: 0 auto;
-  height: 100px;
-  box-sizing: border-box; }
+  width: 250px;
+  box-sizing: border-box;
+  padding: 1em;
+  background-color: #eee; }
+  .dashboard__dashboardContainer h4, .dashboard__dashboardContainer p {
+    margin: 0.3em; }
+  .dashboard__dashboardContainer p {
+    padding: 0 10px;
+    font-size: 12px; }
 
-button {
+.dashboard__button {
   width: 100%;
   padding: 5px;
-  margin-bottom: 1em; }
+  display: block;
+  background: #ccc;
+  border: none;
+  cursor: pointer; }
 
-h3 {
-  text-align: center; }
+.dashboard__savedProgram {
+  margin-top: 2em; }
 .tape__status {
   text-align: center; }
 
@@ -79,8 +86,8 @@ h1 {
           align-items: stretch; }
 
 .program__node + .program__node {
-  margin-top: 1em;
-  padding-top: 1em;
+  margin-top: 0.5em;
+  padding-top: 0.5em;
   border-top: 1px solid #ccc; }
 
 .program___nodeHeader, .program__topHeader, .program__nodeHeader {
@@ -126,12 +133,19 @@ h1 {
     border: none;
     text-align-last: center;
     width: 100%;
-    padding: 5px; }
+    padding: 3px; }
     .program__rule select:hover {
       font-weight: bold; }
   .program__rule .program__header {
     font-weight: bold; }
   .program__rule.program__active select {
     background-color: #fcc; }
+.app__appContainer {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  height: 100%; }
+
 .app__appContent {
-  padding-top: 2em; }
+  padding-top: 2em;
+  width: 100%; }

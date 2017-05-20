@@ -10,6 +10,7 @@ import createLogger  from 'redux-logger'
 import reducer from 'reducers'
 import App from 'app'
 import CONST from 'constants'
+import programs from 'programs'
 
 // Middleware
 const loggerMiddleware = createLogger()
@@ -28,45 +29,8 @@ const initialState = {
       ruleIdx: null,
     }
   },
-  tape: [CONST.START,'1','0','1','1','0','0',CONST.BLANK,CONST.BLANK,CONST.BLANK],
-  program: {
-    A: [
-      {
-        read: '1',
-        next: CONST.INIT,
-        write: '1',
-        move: CONST.RIGHT
-      },
-      {
-        read: '0',
-        next: CONST.INIT,
-        write: '1',
-        move: CONST.LEFT
-      },
-      {
-        read: CONST.BLANK,
-        next: 'B',
-        write: CONST.BLANK,
-        move: CONST.LEFT
-      },
-      CONST.BLANK_RULE
-    ],
-    B: [
-      {
-        read: '1',
-        next: 'B',
-        write: '1',
-        move: CONST.LEFT
-      },
-      {
-        read: CONST.START,
-        next: CONST.ACCEPT,
-        write: CONST.START,
-      },
-      CONST.BLANK_RULE
-    ],
-    C: [CONST.BLANK_RULE]
-  }
+  tape: programs[0].tape,
+  program: programs[0].program
 }
 const store  = createStore(reducer, initialState, middleware)
 
