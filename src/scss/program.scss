@@ -15,7 +15,7 @@
     }
 
     .node + .node {
-        margin-top: 2em;
+        margin-top: 1em;
         padding-top: 1em;
         border-top: 1px solid #ccc;
     }
@@ -54,6 +54,10 @@
         span {
             width: 25%;
             text-align: center;
+        }
+
+        span + span {
+            border-left: 1px dashed #ccc;
         }
 
         select {

@@ -25,7 +25,8 @@ const findMatchingRule = (action, state) => {
   if (
     noMatchFound ||
     program[match.node][ruleIdx].next === CONST.ACCEPT ||
-    program[match.node][ruleIdx].next === CONST.REJECT
+    program[match.node][ruleIdx].next === CONST.REJECT ||
+    program[match.node][ruleIdx].next === CONST.BLANK
   ) {
     // Halt the machine
     return {

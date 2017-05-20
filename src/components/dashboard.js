@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import style from 'scss/dashboard.scss'
 import CONST from 'constants'
 
-
 class Dashboard extends Component
 {
   static propTypes = {
@@ -29,10 +28,13 @@ class Dashboard extends Component
 
   render()
   {
-    const {startMachine, running} = this.props
+    const {startMachine, machine} = this.props
     return (
       <div className={style.dashboardContainer}>
-        <button disabled={running} onClick={startMachine}>Start</button>
+        <button 
+          disabled={machine.state === CONST.RUNNING} 
+          onClick={startMachine}
+        >Start</button>
         <h3 className={style.status}>{this.getStatus()}</h3>
       </div>
     )

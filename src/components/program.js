@@ -57,12 +57,7 @@ class Program extends Component
       default:
         return
     }
-    console.log(newRule)
-
-    const newRules = this.props.program[nodeName].map((rule, idx) =>
-      idx === ruleIdx ? newRule : rule
-    )
-    this.props.updateProgram(nodeName, newRules)
+    this.props.updateProgram(nodeName, ruleIdx, newRule)
   }
 
   render()
@@ -70,7 +65,6 @@ class Program extends Component
     const {program} = this.props
     return (
       <div>
-        <h1>Program</h1>
         <div className={style.node}>
             <div className={style.topHeader}>Node</div>
             <div className={style.nodeRules}>
@@ -117,7 +111,7 @@ class Program extends Component
                     >
                       <option value="RIGHT">RIGHT</option> 
                       <option value="LEFT">LEFT</option>
-                      <option value=""></option>
+                      <option value={CONST.BLANK}>{CONST.BLANK}</option>
                     </select>
                   </span>
                   <span>                    
@@ -125,9 +119,10 @@ class Program extends Component
                       onChange={this.handleSelect('NEXT', idx, nodeName)}
                       defaultValue={rule.next}
                     >
-                      <option value="A">A</option> 
-                      <option value="B">B</option>
-                      <option value="ACCEPT">ACCEPT</option>
+                      {Object.keys(program).concat(['ACCEPT', CONST.BLANK])
+                      .map((_nodeName, _idx) =>
+                        <option key={_idx} value={_nodeName}>{_nodeName}</option> 
+                      )}
                     </select>
                   </span>
                 </div>

@@ -16,6 +16,7 @@ class App extends Component
           startMachine={this.props.startMachine}
           machine={this.props.machine}
         />
+
         <div className={style.appContent}>
           <Tape 
             setTape={this.props.setTape} 
@@ -42,7 +43,7 @@ let mapStateToProps = (state) => ({
 let mapDispatchToProps = (dispatch) => ({
   startMachine: () => dispatch(Actions.startMachine()),
   setTape: (idx, val) => dispatch(Actions.setTape(idx, val)),
-  updateProgram: (nodeName, rules) => dispatch(Actions.updateProgram(nodeName, rules)),
+  updateProgram: (nodeName, ruleIdx, newRule) => dispatch(Actions.updateProgram(nodeName, ruleIdx, newRule)),
 })
 
 module.exports = connect(

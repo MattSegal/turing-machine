@@ -49,6 +49,7 @@ const initialState = {
         write: CONST.BLANK,
         move: CONST.LEFT
       },
+      CONST.BLANK_RULE
     ],
     B: [
       {
@@ -61,8 +62,10 @@ const initialState = {
         read: CONST.START,
         next: CONST.ACCEPT,
         write: CONST.START,
-      }
-    ]
+      },
+      CONST.BLANK_RULE
+    ],
+    C: [CONST.BLANK_RULE]
   }
 }
 const store  = createStore(reducer, initialState, middleware)

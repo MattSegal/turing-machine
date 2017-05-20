@@ -74,7 +74,7 @@
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _app = __webpack_require__(235);
+	var _app = __webpack_require__(236);
 
 	var _app2 = _interopRequireDefault(_app);
 
@@ -115,7 +115,7 @@
 	      next: 'B',
 	      write: _constants2.default.BLANK,
 	      move: _constants2.default.LEFT
-	    }],
+	    }, _constants2.default.BLANK_RULE],
 	    B: [{
 	      read: '1',
 	      next: 'B',
@@ -125,7 +125,8 @@
 	      read: _constants2.default.START,
 	      next: _constants2.default.ACCEPT,
 	      write: _constants2.default.START
-	    }]
+	    }, _constants2.default.BLANK_RULE],
+	    C: [_constants2.default.BLANK_RULE]
 	  }
 	};
 	var store = (0, _redux.createStore)(_reducers2.default, initialState, middleware);
@@ -25158,7 +25159,7 @@
 
 	var _machine = __webpack_require__(232);
 
-	var _program = __webpack_require__(246);
+	var _program = __webpack_require__(235);
 
 	var reducer = function reducer(state, action) {
 	    return (0, _utilities.pipe)((0, _machine.machineReducer)(action), (0, _program.programReducer)(action))(state);
@@ -25241,7 +25242,7 @@
 	    return e.read;
 	  }).indexOf(tapeValue);
 	  var noMatchFound = ruleIdx === -1;
-	  if (noMatchFound || program[match.node][ruleIdx].next === _constants2.default.ACCEPT || program[match.node][ruleIdx].next === _constants2.default.REJECT) {
+	  if (noMatchFound || program[match.node][ruleIdx].next === _constants2.default.ACCEPT || program[match.node][ruleIdx].next === _constants2.default.REJECT || program[match.node][ruleIdx].next === _constants2.default.BLANK) {
 	    // Halt the machine
 	    return _extends({}, state, {
 	      machine: _extends({}, machine, {
@@ -25337,11 +25338,12 @@
 	  UPDATE_PROGRAM: 'UPDATE_PROGRAM',
 	  ADD_NODE: 'ADD_NODE' };
 
-	var updateProgram = function updateProgram(nodeName, rules) {
+	var updateProgram = function updateProgram(nodeName, ruleIdx, newRule) {
 	  return {
 	    type: types.UPDATE_PROGRAM,
 	    nodeName: nodeName,
-	    rules: rules
+	    ruleIdx: ruleIdx,
+	    newRule: newRule
 	  };
 	};
 
@@ -25392,27 +25394,102 @@
 	'use strict';
 
 	module.exports = {
-	  NODE_NAMES: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
+	    NODE_NAMES: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
+	    BLANK_RULE: {
+	        read: ' ', // CONST.BLANK
+	        next: ' ',
+	        write: ' ',
+	        move: ' '
+	    },
 
-	  // Machine states
-	  VIRGIN: 'VIRGIN',
-	  RUNNING: 'RUNNING',
-	  ACCEPT: 'ACCEPT',
-	  REJECT: 'REJECT',
+	    // Machine states
+	    VIRGIN: 'VIRGIN',
+	    RUNNING: 'RUNNING',
+	    ACCEPT: 'ACCEPT',
+	    REJECT: 'REJECT',
 
-	  // Tape / instruction values
-	  BLANK: ' ',
-	  START: '#',
-	  LEFT: 'LEFT',
-	  RIGHT: 'RIGHT',
+	    // Tape / instruction values
+	    BLANK: ' ',
+	    START: '#',
+	    LEFT: 'LEFT',
+	    RIGHT: 'RIGHT',
 
-	  // Initial state
-	  HEAD_START: 1,
-	  INIT: 'A'
+	    // Initial state
+	    HEAD_START: 1,
+	    INIT: 'A'
 	};
 
 /***/ }),
 /* 235 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.programReducer = undefined;
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _actions = __webpack_require__(233);
+
+	var _constants = __webpack_require__(234);
+
+	var _constants2 = _interopRequireDefault(_constants);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var programReducer = exports.programReducer = function programReducer(action) {
+	  return function (state) {
+	    switch (action.type) {
+	      case _actions.types.UPDATE_PROGRAM:
+	        return updateProgram(action, state);
+	      default:
+	        return _extends({}, state);
+	    }
+	  };
+	};
+
+	var updateProgram = function updateProgram(action, state) {
+
+	  // Ensure that there is always a blank node
+	  var nodeNames = Object.keys(state.program);
+	  var lastNodeName = Object.keys(state.program).sort().pop();
+	  var newNodeName = getNewNodeName(lastNodeName);
+
+	  return _extends({}, state, {
+	    program: nodeNames.reduce(function (program, nodeName) {
+
+	      // Update the changed rule
+	      if (nodeName === action.nodeName) {
+	        program[nodeName] = state.program[nodeName].map(function (rule, idx) {
+	          return idx === action.ruleIdx ? action.newRule : rule;
+	        });
+	      } else {
+	        program[nodeName] = state.program[nodeName];
+	      }
+
+	      // Ensure that there is always a blank rule for each node
+	      var lastRule = program[nodeName][program[nodeName].length - 1];
+	      if (lastRule.next !== _constants2.default.BLANK && lastRule.move !== _constants2.default.BLANK) {
+	        program[nodeName] = program[nodeName].concat(_constants2.default.BLANK_RULE);
+	      }
+
+	      return program;
+	    }, {})
+	  });
+	};
+
+	var getNewNodeName = function getNewNodeName(lastNodeName) {
+	  if (lastNodeName === _constants2.default.NODE_NAMES[_constants2.default.NODE_NAMES.length - 1]) {
+	    throw new Error("Too many nodes! We ran out of letters!");
+	  }
+	  return _constants2.default.NODE_NAMES[_constants2.default.NODE_NAMES.indexOf(lastNodeName) + 1];
+	};
+
+/***/ }),
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25429,19 +25506,19 @@
 
 	var _actions2 = _interopRequireDefault(_actions);
 
-	var _dashboard = __webpack_require__(236);
+	var _dashboard = __webpack_require__(237);
 
 	var _dashboard2 = _interopRequireDefault(_dashboard);
 
-	var _tape = __webpack_require__(238);
+	var _tape = __webpack_require__(239);
 
 	var _tape2 = _interopRequireDefault(_tape);
 
-	var _program = __webpack_require__(243);
+	var _program = __webpack_require__(244);
 
 	var _program2 = _interopRequireDefault(_program);
 
-	var _app = __webpack_require__(244);
+	var _app = __webpack_require__(246);
 
 	var _app2 = _interopRequireDefault(_app);
 
@@ -25509,8 +25586,8 @@
 	    setTape: function setTape(idx, val) {
 	      return dispatch(_actions2.default.setTape(idx, val));
 	    },
-	    updateProgram: function updateProgram(nodeName, rules) {
-	      return dispatch(_actions2.default.updateProgram(nodeName, rules));
+	    updateProgram: function updateProgram(nodeName, ruleIdx, newRule) {
+	      return dispatch(_actions2.default.updateProgram(nodeName, ruleIdx, newRule));
 	    }
 	  };
 	};
@@ -25518,7 +25595,7 @@
 	module.exports = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(App);
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25533,7 +25610,7 @@
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _dashboard = __webpack_require__(237);
+	var _dashboard = __webpack_require__(238);
 
 	var _dashboard2 = _interopRequireDefault(_dashboard);
 
@@ -25584,14 +25661,17 @@
 	    value: function render() {
 	      var _props = this.props,
 	          startMachine = _props.startMachine,
-	          running = _props.running;
+	          machine = _props.machine;
 
 	      return _react2.default.createElement(
 	        'div',
 	        { className: _dashboard2.default.dashboardContainer },
 	        _react2.default.createElement(
 	          'button',
-	          { disabled: running, onClick: startMachine },
+	          {
+	            disabled: machine.state === _constants2.default.RUNNING,
+	            onClick: startMachine
+	          },
 	          'Start'
 	        ),
 	        _react2.default.createElement(
@@ -25617,14 +25697,14 @@
 	module.exports = Dashboard;
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 	module.exports = {"dashboardContainer":"dashboard__dashboardContainer"};
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25643,15 +25723,15 @@
 
 	var _constants2 = _interopRequireDefault(_constants);
 
-	var _tape = __webpack_require__(239);
+	var _tape = __webpack_require__(240);
 
 	var _tape2 = _interopRequireDefault(_tape);
 
-	var _starO = __webpack_require__(240);
+	var _starO = __webpack_require__(241);
 
 	var _starO2 = _interopRequireDefault(_starO);
 
-	var _arrowDropUp = __webpack_require__(242);
+	var _arrowDropUp = __webpack_require__(243);
 
 	var _arrowDropUp2 = _interopRequireDefault(_arrowDropUp);
 
@@ -25743,14 +25823,14 @@
 	module.exports = Tape;
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 	module.exports = {"status":"tape__status","tapeContainer":"tape__tapeContainer","_entry":"tape___entry","start":"tape__start","entry":"tape__entry","entryContainer":"tape__entryContainer","head":"tape__head"};
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25765,7 +25845,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactIconBase = __webpack_require__(241);
+	var _reactIconBase = __webpack_require__(242);
 
 	var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -25787,7 +25867,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25848,7 +25928,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25863,7 +25943,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactIconBase = __webpack_require__(241);
+	var _reactIconBase = __webpack_require__(242);
 
 	var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -25885,7 +25965,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25966,12 +26046,7 @@
 	          default:
 	            return;
 	        }
-	        console.log(newRule);
-
-	        var newRules = _this.props.program[nodeName].map(function (rule, idx) {
-	          return idx === ruleIdx ? newRule : rule;
-	        });
-	        _this.props.updateProgram(nodeName, newRules);
+	        _this.props.updateProgram(nodeName, ruleIdx, newRule);
 	      };
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
@@ -25986,11 +26061,6 @@
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(
-	          'h1',
-	          null,
-	          'Program'
-	        ),
 	        _react2.default.createElement(
 	          'div',
 	          { className: _program2.default.node },
@@ -26125,7 +26195,11 @@
 	                        { value: 'LEFT' },
 	                        'LEFT'
 	                      ),
-	                      _react2.default.createElement('option', { value: '' })
+	                      _react2.default.createElement(
+	                        'option',
+	                        { value: _constants2.default.BLANK },
+	                        _constants2.default.BLANK
+	                      )
 	                    )
 	                  ),
 	                  _react2.default.createElement(
@@ -26137,21 +26211,13 @@
 	                        onChange: _this2.handleSelect('NEXT', idx, nodeName),
 	                        defaultValue: rule.next
 	                      },
-	                      _react2.default.createElement(
-	                        'option',
-	                        { value: 'A' },
-	                        'A'
-	                      ),
-	                      _react2.default.createElement(
-	                        'option',
-	                        { value: 'B' },
-	                        'B'
-	                      ),
-	                      _react2.default.createElement(
-	                        'option',
-	                        { value: 'ACCEPT' },
-	                        'ACCEPT'
-	                      )
+	                      Object.keys(program).concat(['ACCEPT', _constants2.default.BLANK]).map(function (_nodeName, _idx) {
+	                        return _react2.default.createElement(
+	                          'option',
+	                          { key: _idx, value: _nodeName },
+	                          _nodeName
+	                        );
+	                      })
 	                    )
 	                  )
 	                );
@@ -26181,12 +26247,6 @@
 	module.exports = Program;
 
 /***/ }),
-/* 244 */
-/***/ (function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 245 */
 /***/ (function(module, exports) {
 
@@ -26195,43 +26255,9 @@
 
 /***/ }),
 /* 246 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.programReducer = undefined;
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _actions = __webpack_require__(233);
-
-	var _constants = __webpack_require__(234);
-
-	var _constants2 = _interopRequireDefault(_constants);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	var programReducer = exports.programReducer = function programReducer(action) {
-	  return function (state) {
-	    switch (action.type) {
-	      case _actions.types.UPDATE_PROGRAM:
-	        return updateProgram(action, state);
-	      default:
-	        return _extends({}, state);
-	    }
-	  };
-	};
-
-	var updateProgram = function updateProgram(action, state) {
-	  return _extends({}, state, {
-	    program: _extends({}, state.program, _defineProperty({}, action.nodeName, action.rules))
-	  });
-	};
+	// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

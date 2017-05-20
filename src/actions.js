@@ -9,10 +9,11 @@ const types = {
   ADD_NODE: 'ADD_NODE', // unimplemented 
 }
 
-const updateProgram = (nodeName, rules) => ({
+const updateProgram = (nodeName, ruleIdx, newRule) => ({
   type: types.UPDATE_PROGRAM,
   nodeName: nodeName,
-  rules: rules,
+  ruleIdx: ruleIdx,
+  newRule: newRule,
 })
 
 const startMachine = () => (dispatch, getState) => {

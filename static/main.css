@@ -78,7 +78,7 @@ h1 {
           align-items: stretch; }
 
 .program__node + .program__node {
-  margin-top: 2em;
+  margin-top: 1em;
   padding-top: 1em;
   border-top: 1px solid #ccc; }
 
@@ -115,6 +115,8 @@ h1 {
   .program__rule span {
     width: 25%;
     text-align: center; }
+  .program__rule span + span {
+    border-left: 1px dashed #ccc; }
   .program__rule select {
     cursor: pointer;
     -webkit-appearance: none;
