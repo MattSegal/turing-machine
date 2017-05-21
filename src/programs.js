@@ -52,14 +52,14 @@ const programs = [
         // Verify that everything is marked and then accept
         {read: '$', write: '$', move: CONST.LEFT, next: 'D'},
         {read: '!', write: '!', move: CONST.LEFT, next: 'D'},
-        {read: '#', write: ' ', move: ' ', next: 'ACCEPT'},
+        {read: '#', write: '#', move: ' ', next: 'ACCEPT'},
       ],
     }
   },
   {
     title: '0x1x0x Checker',
     description: 'Accepts a string of 0x1x0x Eg. 001100',
-    tape: [CONST.START,'0','0','1','1','0','0',CONST.BLANK,CONST.BLANK],
+    tape: [CONST.START,'0','0','0','1','1','1','0','0','0',CONST.BLANK,CONST.BLANK],
     program: {
       A: [
         // Do same matching algorithm as in 0x1x checker
@@ -92,7 +92,7 @@ const programs = [
         // then move to stage 2
         {read: '$', write: '$', move: CONST.LEFT, next: 'E'},
         {read: '!', write: '!', move: CONST.LEFT, next: 'E'},
-        {read: '#', write: ' ', move: CONST.RIGHT, next: 'F'},
+        {read: '#', write: '#', move: CONST.RIGHT, next: 'F'},
       ],
       F: [
         // Begin stage 2 - tape should read !!!$$$000
@@ -127,8 +127,7 @@ const programs = [
         /// and then accept
         {read: '&', write: '&', move: CONST.LEFT, next: 'J'},
         {read: '!', write: '!', move: CONST.LEFT, next: 'J'},
-        // ACCEPT YOU FUCK!
-        {read: '#', write: ' ', move: ' ', next: 'ACCEPT'},
+        {read: '#', write: '#', move: ' ', next: 'ACCEPT'},
       ],
     }
   }

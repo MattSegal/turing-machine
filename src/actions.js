@@ -5,6 +5,7 @@ const types = {
   APPLY_MATCH: 'APPLY_MATCH',
   SET_TAPE: 'SET_TAPE',
   RESET_MACHINE: 'RESET_MACHINE',
+  SET_DELAY: 'SET_DELAY',
   UPDATE_PROGRAM: 'UPDATE_PROGRAM',
   LOAD_PROGRAM: 'LOAD_PROGRAM',
 }
@@ -23,7 +24,7 @@ const updateProgram = (nodeName, ruleIdx, newRule) => ({
 })
 
 const startMachine = () => (dispatch, getState) => {
-  const intervalTime = 100 // ms
+  const intervalTime = getState().machine.delay
   let intervalId
 
   dispatch({type: types.RESET_MACHINE}) 
@@ -47,10 +48,16 @@ const setTape = (idx,val) => ({
   val
 })
 
+const setDelay = (delayMs) => ({
+  type: types.SET_DELAY,
+  delayMs,
+})
+
 module.exports = {
     types,
     startMachine,
     setTape,
+    setDelay,
     loadProgram,
     updateProgram,
 }

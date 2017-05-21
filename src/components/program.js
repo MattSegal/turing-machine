@@ -93,17 +93,17 @@ class Program extends Component
                 <div key={idx} className={this.tagActiveRule(idx, nodeName, style.rule)}>
                   <span>
                     {this.selector(nodeName, idx, 'READ', rule.read, 
-                      ["0", "1", "#", "!", "$", "&", CONST.BLANK]
+                      ['0', '1', '#', '!', '$', '&', CONST.BLANK]
                     )}
                   </span>
                   <span>
                     {this.selector(nodeName, idx, 'WRITE', rule.write, 
-                      ["0", "1", "!", "$", "&", CONST.BLANK]
+                      ['0', '1', '#', '!', '$', '&', CONST.BLANK]
                     )}
                   </span>
                   <span>  
                     {this.selector(nodeName, idx, 'MOVE', rule.move, 
-                      ["RIGHT", "LEFT", CONST.BLANK]
+                      ['RIGHT', 'LEFT', CONST.BLANK]
                     )}                  
                   </span>
                   <span>    

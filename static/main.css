@@ -26,6 +26,17 @@ html, body, h1, h2, h3 {
   border: none;
   cursor: pointer; }
 
+.dashboard__delayWidget span {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  font-weight: bold; }
+
+.dashboard__delayWidget span + span {
+  margin-left: 0.5em;
+  cursor: pointer; }
+
 .dashboard__savedProgram {
   margin-top: 2em; }
 .tape__status {

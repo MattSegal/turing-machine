@@ -28,6 +28,17 @@
         cursor: pointer;
     }
 
+    .delayWidget {
+        span {
+            user-select: none;
+            font-weight: bold;
+        }
+
+        span + span {
+            margin-left: 0.5em;
+            cursor: pointer;
+        }
+    }
 
     .savedProgram {
         margin-top: 2em;

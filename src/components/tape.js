@@ -25,8 +25,6 @@ class Tape extends Component
     e.target.focus()
   }
 
-  
-
   render()
   {
     const {tape, machine} = this.props

@@ -9,6 +9,7 @@ export const machineReducer = (action) => (state) =>
     case types.FIND_MATCH:      return findMatchingRule(action, state)
     case types.APPLY_MATCH:     return applyMatchingRule(action, state)
     case types.SET_TAPE:        return setTape(action, state)
+    case types.SET_DELAY:       return setDelay(action, state)
     case types.RESET_MACHINE:   return resetMachine(action, state)
     default:                    return {...state}
   }
@@ -115,3 +116,11 @@ const setTape = (action, state) => {
     }
   }
 }
+
+const setDelay = (action, state) => ({
+    ...state,
+    machine: {
+      ...state.machine,
+      delay: action.delayMs,
+    }
+  })

@@ -23,6 +23,7 @@ const middleware = applyMiddleware(
 const initialState = {
   machine: {
     state: CONST.VIRGIN,
+    delay: 300, // ms
     head: CONST.HEAD_START,
     match: {
       node: CONST.INIT,

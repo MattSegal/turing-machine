@@ -96,6 +96,7 @@
 	var initialState = {
 	  machine: {
 	    state: _constants2.default.VIRGIN,
+	    delay: 300, // ms
 	    head: _constants2.default.HEAD_START,
 	    match: {
 	      node: _constants2.default.INIT,
@@ -25197,6 +25198,8 @@
 	        return applyMatchingRule(action, state);
 	      case _actions.types.SET_TAPE:
 	        return setTape(action, state);
+	      case _actions.types.SET_DELAY:
+	        return setDelay(action, state);
 	      case _actions.types.RESET_MACHINE:
 	        return resetMachine(action, state);
 	      default:
@@ -25293,6 +25296,14 @@
 	  });
 	};
 
+	var setDelay = function setDelay(action, state) {
+	  return _extends({}, state, {
+	    machine: _extends({}, state.machine, {
+	      delay: action.delayMs
+	    })
+	  });
+	};
+
 /***/ }),
 /* 233 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -25310,6 +25321,7 @@
 	  APPLY_MATCH: 'APPLY_MATCH',
 	  SET_TAPE: 'SET_TAPE',
 	  RESET_MACHINE: 'RESET_MACHINE',
+	  SET_DELAY: 'SET_DELAY',
 	  UPDATE_PROGRAM: 'UPDATE_PROGRAM',
 	  LOAD_PROGRAM: 'LOAD_PROGRAM'
 	};
@@ -25333,7 +25345,7 @@
 
 	var startMachine = function startMachine() {
 	  return function (dispatch, getState) {
-	    var intervalTime = 100; // ms
+	    var intervalTime = getState().machine.delay;
 	    var intervalId = void 0;
 
 	    dispatch({ type: types.RESET_MACHINE });
@@ -25364,10 +25376,18 @@
 	  };
 	};
 
+	var setDelay = function setDelay(delayMs) {
+	  return {
+	    type: types.SET_DELAY,
+	    delayMs: delayMs
+	  };
+	};
+
 	module.exports = {
 	  types: types,
 	  startMachine: startMachine,
 	  setTape: setTape,
+	  setDelay: setDelay,
 	  loadProgram: loadProgram,
 	  updateProgram: updateProgram
 	};
@@ -25554,6 +25574,7 @@
 	        _react2.default.createElement(_dashboard2.default, {
 	          startMachine: this.props.startMachine,
 	          loadProgram: this.props.loadProgram,
+	          setDelay: this.props.setDelay,
 	          machine: this.props.machine
 	        }),
 	        _react2.default.createElement(
@@ -25592,6 +25613,9 @@
 	    },
 	    setTape: function setTape(idx, val) {
 	      return dispatch(_actions2.default.setTape(idx, val));
+	    },
+	    setDelay: function setDelay(delay) {
+	      return dispatch(_actions2.default.setDelay(delay));
 	    },
 	    loadProgram: function loadProgram(program, tape) {
 	      return dispatch(_actions2.default.loadProgram(program, tape));
@@ -25632,6 +25656,14 @@
 
 	var _programs2 = _interopRequireDefault(_programs);
 
+	var _plus = __webpack_require__(247);
+
+	var _plus2 = _interopRequireDefault(_plus);
+
+	var _minus = __webpack_require__(248);
+
+	var _minus2 = _interopRequireDefault(_minus);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -25667,6 +25699,14 @@
 	        default:
 	          return 'HALTED';
 	      }
+	    }, _this.handleIncrementDelay = function (e) {
+	      if (_this.props.machine.delay <= 5000) {
+	        _this.props.setDelay(_this.props.machine.delay + 50);
+	      }
+	    }, _this.handleDecrementDelay = function (e) {
+	      if (_this.props.machine.delay >= 50) {
+	        _this.props.setDelay(_this.props.machine.delay - 50);
+	      }
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
 
@@ -25678,6 +25718,7 @@
 	          loadProgram = _props.loadProgram,
 	          machine = _props.machine;
 
+	      var isRunning = machine.state === _constants2.default.RUNNING;
 	      var button = function button(text, clickHandler) {
 	        return _react2.default.createElement(
 	          'button',
@@ -25699,6 +25740,27 @@
 	          null,
 	          'STATUS: ',
 	          this.getStatus()
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: _dashboard2.default.delayWidget },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            'DELAY: ',
+	            machine.delay,
+	            'ms'
+	          ),
+	          !isRunning && _react2.default.createElement(
+	            'span',
+	            { onClick: this.handleIncrementDelay },
+	            _react2.default.createElement(_plus2.default, null)
+	          ),
+	          !isRunning && _react2.default.createElement(
+	            'span',
+	            { onClick: this.handleDecrementDelay },
+	            _react2.default.createElement(_minus2.default, null)
+	          )
 	        ),
 	        _programs2.default.map(function (p, idx) {
 	          return _react2.default.createElement(
@@ -25729,6 +25791,7 @@
 	Dashboard.propTypes = {
 	  startMachine: _propTypes2.default.func.isRequired,
 	  loadProgram: _propTypes2.default.func.isRequired,
+	  setDelay: _propTypes2.default.func.isRequired,
 	  machine: _propTypes2.default.shape({
 	    state: _propTypes2.default.string
 	  }).isRequired
@@ -25742,7 +25805,7 @@
 /***/ (function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
-	module.exports = {"dashboardContainer":"dashboard__dashboardContainer","button":"dashboard__button","savedProgram":"dashboard__savedProgram"};
+	module.exports = {"dashboardContainer":"dashboard__dashboardContainer","button":"dashboard__button","delayWidget":"dashboard__delayWidget","savedProgram":"dashboard__savedProgram"};
 
 /***/ }),
 /* 239 */
@@ -25790,12 +25853,12 @@
 	    { read: '1', write: '1', move: _constants2.default.LEFT, next: 'C' }, { read: '$', write: '$', move: _constants2.default.LEFT, next: 'C' }, { read: '0', write: '0', move: _constants2.default.LEFT, next: 'C' }, { read: '!', write: '!', move: _constants2.default.RIGHT, next: 'A' }, { read: ' ', write: ' ', move: _constants2.default.LEFT, next: 'D' }],
 	    D: [
 	    // Verify that everything is marked and then accept
-	    { read: '$', write: '$', move: _constants2.default.LEFT, next: 'D' }, { read: '!', write: '!', move: _constants2.default.LEFT, next: 'D' }, { read: '#', write: ' ', move: ' ', next: 'ACCEPT' }]
+	    { read: '$', write: '$', move: _constants2.default.LEFT, next: 'D' }, { read: '!', write: '!', move: _constants2.default.LEFT, next: 'D' }, { read: '#', write: '#', move: ' ', next: 'ACCEPT' }]
 	  }
 	}, {
 	  title: '0x1x0x Checker',
 	  description: 'Accepts a string of 0x1x0x Eg. 001100',
-	  tape: [_constants2.default.START, '0', '0', '1', '1', '0', '0', _constants2.default.BLANK, _constants2.default.BLANK],
+	  tape: [_constants2.default.START, '0', '0', '0', '1', '1', '1', '0', '0', '0', _constants2.default.BLANK, _constants2.default.BLANK],
 	  program: {
 	    A: [
 	    // Do same matching algorithm as in 0x1x checker
@@ -25815,7 +25878,7 @@
 	    E: [
 	    // Verify that the first set of 0s is matched with the 2nd set
 	    // then move to stage 2
-	    { read: '$', write: '$', move: _constants2.default.LEFT, next: 'E' }, { read: '!', write: '!', move: _constants2.default.LEFT, next: 'E' }, { read: '#', write: ' ', move: _constants2.default.RIGHT, next: 'F' }],
+	    { read: '$', write: '$', move: _constants2.default.LEFT, next: 'E' }, { read: '!', write: '!', move: _constants2.default.LEFT, next: 'E' }, { read: '#', write: '#', move: _constants2.default.RIGHT, next: 'F' }],
 	    F: [
 	    // Begin stage 2 - tape should read !!!$$$000
 	    // traverse right until we hit a '$'
@@ -25834,9 +25897,7 @@
 	    J: [
 	    // Verify that everything is marked as &s and !s 
 	    /// and then accept
-	    { read: '&', write: '&', move: _constants2.default.LEFT, next: 'J' }, { read: '!', write: '!', move: _constants2.default.LEFT, next: 'J' },
-	    // ACCEPT YOU FUCK!
-	    { read: '#', write: ' ', move: ' ', next: 'ACCEPT' }]
+	    { read: '&', write: '&', move: _constants2.default.LEFT, next: 'J' }, { read: '!', write: '!', move: _constants2.default.LEFT, next: 'J' }, { read: '#', write: '#', move: ' ', next: 'ACCEPT' }]
 	  }
 	}];
 
@@ -26230,17 +26291,17 @@
 	                  _react2.default.createElement(
 	                    'span',
 	                    null,
-	                    _this2.selector(nodeName, idx, 'READ', rule.read, ["0", "1", "#", "!", "$", "&", _constants2.default.BLANK])
+	                    _this2.selector(nodeName, idx, 'READ', rule.read, ['0', '1', '#', '!', '$', '&', _constants2.default.BLANK])
 	                  ),
 	                  _react2.default.createElement(
 	                    'span',
 	                    null,
-	                    _this2.selector(nodeName, idx, 'WRITE', rule.write, ["0", "1", "!", "$", "&", _constants2.default.BLANK])
+	                    _this2.selector(nodeName, idx, 'WRITE', rule.write, ['0', '1', '#', '!', '$', '&', _constants2.default.BLANK])
 	                  ),
 	                  _react2.default.createElement(
 	                    'span',
 	                    null,
-	                    _this2.selector(nodeName, idx, 'MOVE', rule.move, ["RIGHT", "LEFT", _constants2.default.BLANK])
+	                    _this2.selector(nodeName, idx, 'MOVE', rule.move, ['RIGHT', 'LEFT', _constants2.default.BLANK])
 	                  ),
 	                  _react2.default.createElement(
 	                    'span',
@@ -26286,6 +26347,80 @@
 
 	// removed by extract-text-webpack-plugin
 	module.exports = {"appContainer":"app__appContainer","appContent":"app__appContent"};
+
+/***/ }),
+/* 247 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactIconBase = __webpack_require__(243);
+
+	var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var FaPlus = function FaPlus(props) {
+	    return _react2.default.createElement(
+	        _reactIconBase2.default,
+	        _extends({ viewBox: '0 0 40 40' }, props),
+	        _react2.default.createElement(
+	            'g',
+	            null,
+	            _react2.default.createElement('path', { d: 'm35.9 16.4v4.3q0 0.9-0.6 1.5t-1.5 0.7h-9.3v9.2q0 0.9-0.6 1.6t-1.5 0.6h-4.3q-0.9 0-1.5-0.6t-0.7-1.6v-9.2h-9.3q-0.9 0-1.5-0.7t-0.6-1.5v-4.3q0-0.9 0.6-1.5t1.5-0.6h9.3v-9.3q0-0.9 0.7-1.5t1.5-0.6h4.3q0.9 0 1.5 0.6t0.6 1.5v9.3h9.3q0.9 0 1.5 0.6t0.6 1.5z' })
+	        )
+	    );
+	};
+
+	exports.default = FaPlus;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 248 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactIconBase = __webpack_require__(243);
+
+	var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var FaMinus = function FaMinus(props) {
+	    return _react2.default.createElement(
+	        _reactIconBase2.default,
+	        _extends({ viewBox: '0 0 40 40' }, props),
+	        _react2.default.createElement(
+	            'g',
+	            null,
+	            _react2.default.createElement('path', { d: 'm35.9 16.4v4.3q0 0.9-0.6 1.5t-1.5 0.7h-27.2q-0.8 0-1.5-0.7t-0.6-1.5v-4.3q0-0.9 0.6-1.5t1.5-0.6h27.2q0.9 0 1.5 0.6t0.6 1.5z' })
+	        )
+	    );
+	};
+
+	exports.default = FaMinus;
+	module.exports = exports['default'];
 
 /***/ })
 /******/ ]);
