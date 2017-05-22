@@ -8,6 +8,7 @@ export const programReducer = (action) => (state) =>
   {
     case types.UPDATE_PROGRAM:      return updateProgram(action, state)
     case types.LOAD_PROGRAM:        return loadProgram(action, state)
+    case types.LOAD_TAPE:           return loadTape(action, state)
     default:                        return {...state}
   }
 }
@@ -19,6 +20,15 @@ const loadProgram = (action, state) => ({
       state: CONST.VIRGIN
     },
     program: action.program,
+})
+
+
+const loadTape = (action, state) => ({
+    ...state,
+    machine: {
+      ...state.machine,
+      state: CONST.VIRGIN
+    },
     tape: action.tape,
 })
 

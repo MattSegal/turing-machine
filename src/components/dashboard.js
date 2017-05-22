@@ -11,6 +11,7 @@ class Dashboard extends Component
   static propTypes = {
     startMachine: PropTypes.func.isRequired,
     loadProgram: PropTypes.func.isRequired, 
+    loadTape: PropTypes.func.isRequired, 
     setDelay: PropTypes.func.isRequired, 
     machine : PropTypes.shape({
       state: PropTypes.string,
@@ -45,7 +46,7 @@ class Dashboard extends Component
 
   render()
   {
-    const {startMachine, loadProgram, machine} = this.props
+    const {startMachine, loadProgram, loadTape, machine} = this.props
     const isRunning = machine.state === CONST.RUNNING
     const button = (text, clickHandler) => 
        <button 
@@ -67,7 +68,8 @@ class Dashboard extends Component
           <div key={idx} className={style.savedProgram}>
             <h4>{p.title}</h4>
             <p>{p.description}</p>
-            {button('Load', () => loadProgram(p.program, p.tape))}
+            {button('Load Program', () => loadProgram(p.program))}
+            {button('Load Tape', () => loadTape(p.tape))}
           </div>
         ))}
       </div>

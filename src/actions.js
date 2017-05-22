@@ -8,11 +8,16 @@ const types = {
   SET_DELAY: 'SET_DELAY',
   UPDATE_PROGRAM: 'UPDATE_PROGRAM',
   LOAD_PROGRAM: 'LOAD_PROGRAM',
+  LOAD_TAPE: 'LOAD_TAPE',
 }
 
-const loadProgram = (program, tape) => ({
+const loadProgram = (program) => ({
   type: types.LOAD_PROGRAM,
   program: program,
+})
+
+const loadTape = (tape) => ({
+  type: types.LOAD_TAPE,
   tape: tape,
 })
 
@@ -59,5 +64,6 @@ module.exports = {
     setTape,
     setDelay,
     loadProgram,
+    loadTape,
     updateProgram,
 }

@@ -15,6 +15,7 @@ class App extends Component
         <Dashboard 
           startMachine={this.props.startMachine}
           loadProgram={this.props.loadProgram}
+          loadTape={this.props.loadTape}
           setDelay={this.props.setDelay}
           machine={this.props.machine}
         />
@@ -45,7 +46,8 @@ let mapDispatchToProps = (dispatch) => ({
   startMachine: () => dispatch(Actions.startMachine()),
   setTape: (idx, val) => dispatch(Actions.setTape(idx, val)),
   setDelay: (delay) => dispatch(Actions.setDelay(delay)),
-  loadProgram: (program, tape) => dispatch(Actions.loadProgram(program, tape)),
+  loadProgram: (program) => dispatch(Actions.loadProgram(program)),
+  loadTape: (tape) => dispatch(Actions.loadTape(tape)),
   updateProgram: (nodeName, ruleIdx, newRule) => dispatch(Actions.updateProgram(nodeName, ruleIdx, newRule)),
 })
 

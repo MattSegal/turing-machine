@@ -2,15 +2,6 @@ import CONST from 'constants'
 
 const programs = [
   {
-    title: 'Blank Program',
-    description: 'Does nothing',
-    tape: [CONST.START,'0', '1', CONST.BLANK,CONST.BLANK,CONST.BLANK],
-    program: {
-      A: [CONST.BLANK_RULE],
-      B: [CONST.BLANK_RULE],
-    }
-  },
-  {
     title: '0x1x Checker',
     description: 'Accepts a string of 0x1x Eg. 000111',
     tape: [CONST.START,'0','0','0','1','1','1',CONST.BLANK,CONST.BLANK],
@@ -118,6 +109,15 @@ const programs = [
         {read: '!', write: '!', move: CONST.LEFT, next: 'J'},
         {read: '#', write: '#', move: ' ', next: 'ACCEPT'},
       ],
+    }
+  },
+  {
+    title: 'Blank Program',
+    description: 'Does nothing',
+    tape: [CONST.START,'0', '1', CONST.BLANK,CONST.BLANK,CONST.BLANK],
+    program: {
+      A: [CONST.BLANK_RULE],
+      B: [CONST.BLANK_RULE],
     }
   },
   {
