@@ -7,18 +7,7 @@ const programs = [
     tape: [CONST.START,'0', '1', CONST.BLANK,CONST.BLANK,CONST.BLANK],
     program: {
       A: [CONST.BLANK_RULE],
-    }
-  },
-  {
-    title: 'Buggy Program',
-    description: 'Writes 1s forever.',
-    tape: [CONST.START,'0', '1', CONST.BLANK,CONST.BLANK,CONST.BLANK],
-    program: {
-      A: [
-        {read: '0', write: '1', move: CONST.RIGHT, next: 'A'},
-        {read: '1', write: '1', move: CONST.RIGHT, next: 'A'},
-        {read: ' ', write: '1', move: CONST.RIGHT, next: 'A'},
-      ]
+      B: [CONST.BLANK_RULE],
     }
   },
   {
@@ -130,7 +119,20 @@ const programs = [
         {read: '#', write: '#', move: ' ', next: 'ACCEPT'},
       ],
     }
-  }
+  },
+  {
+    title: 'Buggy Program',
+    description: 'Writes 1s forever.',
+    tape: [CONST.START,'0', '1', CONST.BLANK,CONST.BLANK,CONST.BLANK],
+    program: {
+      A: [
+        {read: '0', write: '1', move: CONST.RIGHT, next: 'A'},
+        {read: '1', write: '1', move: CONST.RIGHT, next: 'A'},
+        {read: ' ', write: '1', move: CONST.RIGHT, next: 'A'},
+      ],
+      B: [CONST.BLANK_RULE],
+    }
+  },
 ]
 
 
